@@ -26,4 +26,5 @@ for name, fun, repeat in funs:
     mean_dur = np.mean(durations)
     std_dur = np.std(durations)
 
-    print('{}:{} {:.4f}s ± {:.4f}s'.format(name, ' '*(max_name-len(name)), mean_dur, std_dur))
+    print('{}:{} {: 8.4f}s ± {:.4f}s  [{} reps]'.format(
+          name, ' '*(max_name-len(name)), mean_dur, std_dur, repeat))

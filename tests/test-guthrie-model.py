@@ -21,7 +21,8 @@ def test_model():
                             result = "data/test-experiment-guthrie.npy",
                             report = "data/test-experiment-guthrie.txt",
                             n_session = 25, n_block = 1, seed = 1,
-                            rootdir=os.path.dirname(__file__))
+                            rootdir=os.path.dirname(__file__),
+                            verbose=False)
     records = experiment.run(session, save=False, force=True, parse=False)
     records = np.squeeze(records)
 

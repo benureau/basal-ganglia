@@ -22,7 +22,8 @@ def run_model():
                             result = "data/test-experiment-guthrie.npy",
                             report = "data/test-experiment-guthrie.txt",
                             n_session = 8, n_block = 1, seed = 1,
-                            rootdir=os.path.dirname(__file__)) # for unittest and nosetests.
+                            rootdir=os.path.dirname(__file__),
+                            verbose=False) # for unittest and nosetests.
     records = experiment.run(session, save=True, force=True, parse=False)
     records = np.squeeze(records)
     mean = np.mean(records["best"], axis=0)[-1]

@@ -16,13 +16,14 @@ from model import Model
 
 
 class Experiment(object):
-    def __init__(self, model, task, result, report,
-                       n_session, n_block, seed=None, rootdir=None):
+    def __init__(self, model, task, result, report, n_session, n_block,
+                       seed=None, rootdir=None, verbose=True):
         """Initialize an exeperiment.
 
         rootdir: root directory for the `model`, `task`, `result` and `report`
                  filepath. If None, defaults to the directory of the main script.
         """
+        self.verbose = verbose
         self.rootdir = rootdir
         if rootdir is None:
             from __main__ import __file__ as __mainfile__
@@ -44,6 +45,10 @@ class Experiment(object):
         self.task  = Task(self.task_file)
         self.n_trial = len(self.task)
 
+    def msg(self, s):
+        """Print if verbose is True"""
+        if self.verbose:
+            print(s)
 
     def run(self, session, desc="", save=True, force=False, parse=True):
 
@@ -58,15 +63,15 @@ class Experiment(object):
             print("Reading report (%s)" % self.report_file)
             self.read_report()
 
-        print("-"*30)
-        print("Seed:     {}".format(self.seed))
-        print("Model:    {}".format(self.model_file))
-        print("Task:     {}".format(self.task_file))
-        print("Result:   {}".format(self.result_file))
-        print("Report:   {}".format(self.report_file))
+        self.msg("-"*30)
+        self.msg("Seed:     {}".format(self.seed))
+        self.msg("Model:    {}".format(self.model_file))
+        self.msg("Task:     {}".format(self.task_file))
+        self.msg("Result:   {}".format(self.result_file))
+        self.msg("Report:   {}".format(self.report_file))
         n = self.n_session * self.n_block * self.n_trial
-        print("Sessions: {} ({} trials)".format(self.n_session, n))
-        print("-"*30)
+        self.msg("Sessions: {} ({} trials)".format(self.n_session, n))
+        self.msg("-"*30)
 
         if not os.path.exists(self.result_file) or force:
             index = 0
@@ -80,26 +85,27 @@ class Experiment(object):
             session_args = [(self, session, seed) for seed in seeds]
 
             for result in tqdm(pool.imap(self.session_init, session_args),
-                               total=self.n_session, leave=True, desc=desc, unit="session",):
+                               total=self.n_session, leave=True, desc=desc,
+                               unit="session", disable=not self.verbose):
                 records[index] = result
                 index += 1
             pool.close()
 
             if save:
-                print("Saving results ({})".format(self.result_file))
+                self.msg("Saving results ({})".format(self.result_file))
                 if not os.path.isdir(os.path.dirname(self.result_file)):
                     os.makedirs(os.path.dirname(self.result_file))
                 np.save(self.result_file, records)
                 if not os.path.isdir(os.path.dirname(self.report_file)):
                     os.makedirs(os.path.dirname(self.report_file))
-                print("Writing report ({})".format(self.report_file))
+                self.msg("Writing report ({})".format(self.report_file))
                 self.write_report()
-                print("-"*30)
+                self.msg("-"*30)
         else:
-            print("Loading previous results")
-            print(' → "{}"'.format(self.result_file))
+            self.msg("Loading previous results")
+            self.msg(' → "{}"'.format(self.result_file))
             records = np.load(self.result_file)
-            print("-"*30)
+            self.msg("-"*30)
 
         return records
 
