@@ -31,7 +31,7 @@ def test_model():
     print("Mean performance: %.2f ± %.2f" % (mean, std))
     print("-"*30)
 
-    assert mean >= 0.85
+    assert mean >= 0.80
 
 if __name__ == "__main__":
     test_model()

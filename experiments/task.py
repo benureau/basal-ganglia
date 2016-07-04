@@ -105,20 +105,16 @@ class Task(object):
         index = 0
         for block in blocks:
             n = block["n_trial"]
+            indices = range(len(block["cue"]))
             cue = np.array(block["cue"],float)
-            P_cue = np.cumsum(cue) / np.sum(cue)
+            P_cue = cue / np.sum(cue)
             pos = block["pos"]
-            P_pos = np.cumsum(pos) / np.sum(pos)
+            P_pos = pos / np.sum(pos)
             rwd = block["rwd"]
 
             for i in range(n):
-                c1 = c2 =  np.searchsorted(P_cue, np.random.uniform(0,1))
-                while c1 == c2:
-                    c2 = np.searchsorted(P_cue, np.random.uniform(0,1))
-
-                m1 = m2 =  np.searchsorted(P_pos, np.random.uniform(0,1))
-                while m1 == m2:
-                    m2 = np.searchsorted(P_pos, np.random.uniform(0,1))
+                c1, c2 = np.random.choice(indices, size=2, replace=False, p=P_cue)
+                m1, m2 = np.random.choice(indices, size=2, replace=False, p=P_pos)
 
                 trial = self.trials[index]
                 trial["cog"][[c1,c2]] = 1

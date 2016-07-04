@@ -25,9 +25,6 @@ def run_model():
                             rootdir=os.path.dirname(__file__),
                             verbose=False) # for unittest and nosetests.
     records = experiment.run(session, save=True, force=True, parse=False)
-    records = np.squeeze(records)
-    mean = np.mean(records["best"], axis=0)[-1]
-    assert mean >= 0.85
 
 def result_filename(suffix='', ext='npy'):
     return os.path.join(os.path.dirname(__file__),
