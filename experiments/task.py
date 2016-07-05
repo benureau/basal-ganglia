@@ -104,24 +104,23 @@ class Task(object):
         # Build actual trials
         index = 0
         for block in blocks:
-            n = block["n_trial"]
             indices = range(len(block["cue"]))
+            n_cues = block.get("n_cue", 2) # defaults to 2 cues
             cue = np.array(block["cue"],float)
             P_cue = cue / np.sum(cue)
             pos = block["pos"]
             P_pos = pos / np.sum(pos)
-            rwd = block["rwd"]
 
-            for i in range(n):
-                c1, c2 = np.random.choice(indices, size=2, replace=False, p=P_cue)
-                m1, m2 = np.random.choice(indices, size=2, replace=False, p=P_pos)
+            for i in range(block["n_trial"]):
+                cues_idx = np.random.choice(indices, size=n_cues, replace=False, p=P_cue)
+                pos_idx  = np.random.choice(indices, size=n_cues, replace=False, p=P_pos)
 
                 trial = self.trials[index]
-                trial["cog"][[c1,c2]] = 1
-                trial["mot"][[m1,m2]] = 1
-                trial["ass"][c1,m1]   = 1
-                trial["ass"][c2,m2]   = 1
-                trial["rwd"][...]     = rwd
+                trial["cog"][cues_idx] = 1
+                trial["mot"][pos_idx]  = 1
+                for c, p in zip(cues_idx, pos_idx):
+                    trial["ass"][c,p] = 1
+                trial["rwd"][...] = block["rwd"]
                 index += 1
 
     def __iter__(self):

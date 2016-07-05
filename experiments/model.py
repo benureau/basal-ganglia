@@ -30,23 +30,23 @@ class Model(object):
             Wmin = _["weight"]["min"]
             Wmax = _["weight"]["max"]
             noise= _["weight"]["noise"]
-            W = Wmin + np.random.normal( (Wmax-Wmin)/2, noise, shape)
-            return np.minimum(np.maximum(W, Wmin), Wmax)
+            W = np.random.normal((Wmax+Wmin)/2, scale=noise, size=shape)
+            return np.clip(W, Wmin, Wmax)
 
 
         self._structures = {
-            "CTX" : { "cog" : Group(4, activation = clamp),
-                      "mot" : Group(4, activation = clamp),
+            "CTX" : { "cog" : Group( 4, activation = clamp),
+                      "mot" : Group( 4, activation = clamp),
                       "ass" : Group(16, activation = clamp) },
-            "STR" : { "cog" : Group(4, activation = sigmoid),
-                      "mot" : Group(4, activation = sigmoid),
+            "STR" : { "cog" : Group( 4, activation = sigmoid),
+                      "mot" : Group( 4, activation = sigmoid),
                       "ass" : Group(16, activation = sigmoid) },
-            "STN" : { "cog" : Group(4, activation = clamp),
-                      "mot" : Group(4, activation = clamp) },
-            "GPi" : { "cog" : Group(4, activation = clamp),
-                      "mot" : Group(4, activation = clamp) },
-            "THL" : { "cog" : Group(4, activation = clamp),
-                      "mot" : Group(4, activation = clamp) },
+            "STN" : { "cog" : Group( 4, activation = clamp),
+                      "mot" : Group( 4, activation = clamp) },
+            "GPi" : { "cog" : Group( 4, activation = clamp),
+                      "mot" : Group( 4, activation = clamp) },
+            "THL" : { "cog" : Group( 4, activation = clamp),
+                      "mot" : Group( 4, activation = clamp) },
         }
         for name, structure in self._structures.items():
             for group in structure.values():
@@ -182,9 +182,9 @@ class Model(object):
         # Trial setup
         V     = _["input"]["potential"]
         noise = _["input"]["noise"]
-        self["CTX"]["cog"]["Iext"] = V * trial["cog"] * (1 + np.random.normal(0, noise, 4))
-        self["CTX"]["mot"]["Iext"] = V * trial["mot"] * (1 + np.random.normal(0, noise, 4))
-        self["CTX"]["ass"]["Iext"] = V * trial["ass"].ravel() * (1 + np.random.normal(0, noise, 16))
+        self["CTX"]["cog"]["Iext"] = V * trial["cog"] * np.random.normal(1, noise, 4)
+        self["CTX"]["mot"]["Iext"] = V * trial["mot"] * np.random.normal(1, noise, 4)
+        self["CTX"]["ass"]["Iext"] = V * trial["ass"].ravel() * np.random.normal(1, noise, 16)
 
         # Trial process (max 2500ms)
         decision = False
@@ -215,15 +215,16 @@ class Model(object):
             Wmax = _["weight"]["max"]
 
             # Reinforcement learning
-            alpha = _["RL"]["alpha"]
-            LTP   = _["RL"]["LTP"]
-            LTD   = _["RL"]["LTD"]
+            alpha_critic = _["RL"]["alpha"]
             error = reward - self["value"][cue]
-            self["value"][cue] += error * alpha
-            alpha = LTP if error > 0 else LTD
-            dw = error * alpha * self["STR"]["cog"]["V"][cue]
+            self["value"][cue] += alpha_critic * error
+
+            LTP   = _["RL"]["LTP"] # long-term potentiation
+            LTD   = _["RL"]["LTD"] # long-term depression
+            alpha_actor = LTP if error > 0 else LTD
+            dw = alpha_actor * error * self["STR"]["cog"]["V"][cue]
             W = self["CTX:cog → STR:cog"].weights
-            W[cue] += dw * (Wmax-W[cue])*(W[cue]-Wmin)
+            W[cue] += dw * (Wmax - W[cue]) * (W[cue] - Wmin)
 
             # Hebbian learning
             # This is the chosen cue by the model (may be different from the actual cue)
@@ -232,4 +233,4 @@ class Model(object):
             LTP   = _["Hebbian"]["LTP"]
             dw = LTP * self["CTX"]["cog"]["V"][cue]
             W = self["CTX:cog → CTX:ass"].weights
-            W[cue] += dw * (Wmax-W[cue])*(W[cue]-Wmin)
+            W[cue] += dw * (Wmax - W[cue]) * (W[cue] - Wmin)
