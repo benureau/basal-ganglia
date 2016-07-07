@@ -65,15 +65,15 @@ cdef class Sigmoid(Function):
 
 # ------------------------------------------------------------------- Group ---
 # Python group type (dtype)
-dtype = [("V",  float),
-         ("U",  float),
+dtype = [("U",  float),
+         ("V",  float),
          ("Isyn",  float),
          ("Iext", float)]
 
 # C group type (ctype)
 cdef packed struct ctype:
-    np.float64_t V
     np.float64_t U
+    np.float64_t V
     np.float64_t Isyn
     np.float64_t Iext
 
@@ -133,12 +133,12 @@ cdef class Group:
             self._rest = value
 
     property V:
-        """ Firing rate """
+        """ Membrane potential """
         def __get__(self):
             return np.asarray(self._units)["V"]
 
     property U:
-        """ Membrane potential """
+        """ Firing rate """
         def __get__(self):
             return np.asarray(self._units)["U"]
 
@@ -169,18 +169,18 @@ cdef class Group:
             noise = np.random.uniform(-0.5*self._noise, 0.5*self._noise)
 
             # Update membrane potential
-            unit.U += dt/self._tau*(-unit.U + unit.Isyn + unit.Iext - self._rest )
+            unit.V += dt/self._tau*(-unit.V + unit.Isyn + unit.Iext - self._rest )
 
             # Update firing rate
-            unit.V = self._activation.call(unit.U *(1 + noise))
+            unit.U = self._activation.call(unit.V * (1 + noise))
 
             # Store firing rate activity
-            self._history[self._history_index,i] = unit.V
+            self._history[self._history_index,i] = unit.U
 
             # Here we record the max activities to store their difference
             # This is used later to decide if a motor decision has been made
-            if   unit.V > max1: max1, max2 = unit.V, max1
-            elif unit.V > max2: max2 = unit.V
+            if   unit.U > max1: max1, max2 = unit.U, max1
+            elif unit.U > max2: max2 = unit.U
 
         self._delta = max1 - max2
         self._history_index +=1
@@ -192,8 +192,8 @@ cdef class Group:
         cdef int i
         self._history_index = 0
         for i in range(len(self._units)):
-            self._units[i].V = 0
             self._units[i].U = 0
+            self._units[i].V = 0
             self._units[i].Isyn = 0
             self._units[i].Iext = 0
 

@@ -47,7 +47,7 @@ def bench_group(K=1000, L=100):
     for _ in range(K):
         dt = np.random.uniform(low=-0.1, high=0.1)
         group  = cdana.Group(4)
-        group['U']    = np.random.random(group['U'].shape)
+        group['V']    = np.random.random(group['V'].shape)
         group['Iext'] = np.random.random(group['Iext'].shape)
         group['Isyn'] = np.random.random(group['Isyn'].shape)
 

@@ -70,14 +70,14 @@ class Group(object):
         max1, max2 = float('-inf'), float('-inf')
 
         for unit in self.units:
-            unit['U'] += dt/self.tau*(-unit['U'] + unit['Isyn'] + unit['Iext'] - self.rest)  # Update membrane potential
+            unit['V'] += dt/self.tau*(-unit['V'] + unit['Isyn'] + unit['Iext'] - self.rest)  # Update membrane potential
             noise = 1 + self.noise*np.random.uniform(low=-0.5, high=0.5)                     # Compute white noise
-            unit['V'] = self.activation.call(unit['U']*noise)                                # Update firing rate
+            unit['U'] = self.activation.call(unit['V']*noise)                                # Update firing rate
 
-            if   unit['V'] > max1: max1, max2 = unit['V'], max1  # Here we record the max activities to store their difference
-            elif unit['V'] > max2: max2 = unit['V']              # This is used later to decide if a motor decision has been made
+            if   unit['U'] > max1: max1, max2 = unit['U'], max1  # Here we record the max activities to store their difference
+            elif unit['U'] > max2: max2 = unit['U']              # This is used later to decide if a motor decision has been made
 
-        self.history.append(self.units['V']) # Store firing rate activity
+        self.history.append(self.units['U']) # Store firing rate activity
         self.delta = max1 - max2
 
     def __getitem__(self, key): # quick access to the units's fields

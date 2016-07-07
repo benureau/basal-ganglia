@@ -46,7 +46,7 @@ class DanaEquivalence(unittest.TestCase):
 
     @classmethod
     def random_inputs(cls, group):
-        group['U']    = np.random.random(group['U'].shape)
+        group['V']    = np.random.random(group['V'].shape)
         group['Iext'] = np.random.random(group['Iext'].shape)
         group['Isyn'] = np.random.random(group['Isyn'].shape)
 
@@ -77,7 +77,6 @@ class DanaEquivalence(unittest.TestCase):
                 total += 1
                 if deltas[0][k] != deltas[1][k]:
                     error += 1
-                #self.assertEqual(deltas[0][k], deltas[1][k])
                 self.assertTrue(np.all(Us[0][k] == Us[1][k]))
 
 

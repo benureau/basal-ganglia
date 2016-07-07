@@ -23,7 +23,7 @@ def test_model():
                             n_session = 25, n_block = 1, seed = 1,
                             rootdir=os.path.dirname(__file__),
                             verbose=False)
-    records = experiment.run(session, save=False, force=True, parse=False)
+    records = experiment.run(session, save=True, force=True, parse=False)
     records = np.squeeze(records)
 
     mean = np.mean(records["best"], axis=0)[-1]

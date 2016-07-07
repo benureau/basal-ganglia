@@ -73,64 +73,64 @@ class Model(object):
 
         self._links = {
             "CTX:cog → STR:cog" :
-                OneToOne(CTX["cog"]["V"], STR["cog"]["Isyn"], weights(4), 0.0),
+                OneToOne(CTX["cog"]["U"], STR["cog"]["Isyn"], weights(4), 0.0),
             "CTX:cog → STR:ass" :
-                CogToAss(CTX["cog"]["V"], STR["ass"]["Isyn"], weights(4), 0.0),
+                CogToAss(CTX["cog"]["U"], STR["ass"]["Isyn"], weights(4), 0.0),
             "CTX:cog → STN:cog" :
-                OneToOne(CTX["cog"]["V"], STN["cog"]["Isyn"], np.ones(4), 0.0),
+                OneToOne(CTX["cog"]["U"], STN["cog"]["Isyn"], np.ones(4), 0.0),
             "CTX:cog → THL:cog" :
-                OneToOne(CTX["cog"]["V"], THL["cog"]["Isyn"], np.ones(4), 0.0),
+                OneToOne(CTX["cog"]["U"], THL["cog"]["Isyn"], np.ones(4), 0.0),
 
             "CTX:mot → STR:mot" :
-                OneToOne(CTX["mot"]["V"], STR["mot"]["Isyn"], weights(4), 0.0),
+                OneToOne(CTX["mot"]["U"], STR["mot"]["Isyn"], weights(4), 0.0),
             "CTX:mot → STR:ass" :
-                MotToAss(CTX["mot"]["V"], STR["ass"]["Isyn"], weights(4), 0.0),
+                MotToAss(CTX["mot"]["U"], STR["ass"]["Isyn"], weights(4), 0.0),
             "CTX:mot → STN:mot" :
-                OneToOne(CTX["mot"]["V"], STN["mot"]["Isyn"], np.ones(4), 0.0),
+                OneToOne(CTX["mot"]["U"], STN["mot"]["Isyn"], np.ones(4), 0.0),
             "CTX:mot → THL:mot" :
-                OneToOne(CTX["mot"]["V"], THL["mot"]["Isyn"], np.ones(4), 0.0),
+                OneToOne(CTX["mot"]["U"], THL["mot"]["Isyn"], np.ones(4), 0.0),
 
             "CTX:ass → STR:ass" :
-                OneToOne(CTX["ass"]["V"], STR["ass"]["Isyn"], weights(16), 0.0),
+                OneToOne(CTX["ass"]["U"], STR["ass"]["Isyn"], weights(16), 0.0),
 
             "STR:cog → GPi:cog" :
-                OneToOne(STR["cog"]["V"], GPi["cog"]["Isyn"], np.ones(4), 0.0),
+                OneToOne(STR["cog"]["U"], GPi["cog"]["Isyn"], np.ones(4), 0.0),
             "STR:mot → GPi:mot" :
-                OneToOne(STR["mot"]["V"], GPi["mot"]["Isyn"], np.ones(4), 0.0),
+                OneToOne(STR["mot"]["U"], GPi["mot"]["Isyn"], np.ones(4), 0.0),
             "STR:ass → GPi:cog" :
-                AssToCog(STR["ass"]["V"], GPi["cog"]["Isyn"], np.ones(4), 0.0),
+                AssToCog(STR["ass"]["U"], GPi["cog"]["Isyn"], np.ones(4), 0.0),
             "STR:ass → GPi:mot" :
-                AssToMot(STR["ass"]["V"], GPi["mot"]["Isyn"], np.ones(4), 0.0),
+                AssToMot(STR["ass"]["U"], GPi["mot"]["Isyn"], np.ones(4), 0.0),
 
             "STN:cog → GPi:cog" :
-                OneToAll(STN["cog"]["V"], GPi["cog"]["Isyn"], np.ones(4), 0.0),
+                OneToAll(STN["cog"]["U"], GPi["cog"]["Isyn"], np.ones(4), 0.0),
             "STN:mot → GPi:mot" :
-                OneToAll(STN["mot"]["V"], GPi["mot"]["Isyn"], np.ones(4), 0.0),
+                OneToAll(STN["mot"]["U"], GPi["mot"]["Isyn"], np.ones(4), 0.0),
 
             "GPi:cog → THL:cog" :
-                OneToOne(GPi["cog"]["V"], THL["cog"]["Isyn"], np.ones(4), 0.0),
+                OneToOne(GPi["cog"]["U"], THL["cog"]["Isyn"], np.ones(4), 0.0),
             "GPi:mot → THL:mot" :
-                OneToOne(GPi["mot"]["V"], THL["mot"]["Isyn"], np.ones(4), 0.0),
+                OneToOne(GPi["mot"]["U"], THL["mot"]["Isyn"], np.ones(4), 0.0),
 
             "THL:cog → CTX:cog" :
-                OneToOne(THL["cog"]["V"], CTX["cog"]["Isyn"], np.ones(4), 0.0),
+                OneToOne(THL["cog"]["U"], CTX["cog"]["Isyn"], np.ones(4), 0.0),
             "THL:mot → CTX:mot" :
-                OneToOne(THL["mot"]["V"], CTX["mot"]["Isyn"], np.ones(4), 0.0),
+                OneToOne(THL["mot"]["U"], CTX["mot"]["Isyn"], np.ones(4), 0.0),
 
             "CTX:mot → CTX:mot":
-                AllToAll(CTX["mot"]["V"], CTX["mot"]["Isyn"], W1, 0.0),
+                AllToAll(CTX["mot"]["U"], CTX["mot"]["Isyn"], W1, 0.0),
             "CTX:cog → CTX:cog":
-                AllToAll(CTX["cog"]["V"], CTX["cog"]["Isyn"], W1, 0.0),
+                AllToAll(CTX["cog"]["U"], CTX["cog"]["Isyn"], W1, 0.0),
             "CTX:ass → CTX:ass":
-                AllToAll(CTX["ass"]["V"], CTX["ass"]["Isyn"], W2, 0.0),
+                AllToAll(CTX["ass"]["U"], CTX["ass"]["Isyn"], W2, 0.0),
             "CTX:ass → CTX:cog":
-                AssToCog(CTX["ass"]["V"], CTX["cog"]["Isyn"], np.ones(4), 0.0),
+                AssToCog(CTX["ass"]["U"], CTX["cog"]["Isyn"], np.ones(4), 0.0),
             "CTX:ass → CTX:mot":
-                AssToMot(CTX["ass"]["V"], CTX["mot"]["Isyn"], np.ones(4), 0.0),
+                AssToMot(CTX["ass"]["U"], CTX["mot"]["Isyn"], np.ones(4), 0.0),
             "CTX:cog → CTX:ass":
-                CogToAss(CTX["cog"]["V"], CTX["ass"]["Isyn"], weights(4), 0.0),
+                CogToAss(CTX["cog"]["U"], CTX["ass"]["Isyn"], weights(4), 0.0),
             "CTX:mot → CTX:ass":
-                MotToAss(CTX["mot"]["V"], CTX["ass"]["Isyn"], weights(4), 0.0)
+                MotToAss(CTX["mot"]["U"], CTX["ass"]["Isyn"], weights(4), 0.0)
         }
         for key, link in self._links.items():
             if key in _["gain"].keys():
@@ -205,8 +205,8 @@ class Model(object):
             # print("  No decision")
             reward, cue, best = task.process(trial, -1, RT, debug=debug, model=model)
         else:
-            choice = np.argmax(self["CTX"]["mot"]["U"])
-            # actual_cue = np.argmax(self["CTX"]["cog"]["U"])
+            choice = np.argmax(self["CTX"]["mot"]["V"])
+            # actual_cue = np.argmax(self["CTX"]["cog"]["V"])
             reward, cue, best = task.process(trial, choice, RT, debug=debug, model=model)
             # print("  Motor decision: %d, Chosen cue: %d, Actual cue: %d" % (choice,cue, actual_cue))
 
@@ -222,15 +222,15 @@ class Model(object):
             LTP   = _["RL"]["LTP"] # long-term potentiation
             LTD   = _["RL"]["LTD"] # long-term depression
             alpha_actor = LTP if error > 0 else LTD
-            dw = alpha_actor * error * self["STR"]["cog"]["V"][cue]
+            dw = alpha_actor * error * self["STR"]["cog"]["U"][cue]
             W = self["CTX:cog → STR:cog"].weights
             W[cue] += dw * (Wmax - W[cue]) * (W[cue] - Wmin)
 
             # Hebbian learning
             # This is the chosen cue by the model (may be different from the actual cue)
-            cue = np.argmax(self["CTX"]["cog"]["U"])
+            cue = np.argmax(self["CTX"]["cog"]["V"])
 
             LTP   = _["Hebbian"]["LTP"]
-            dw = LTP * self["CTX"]["cog"]["V"][cue]
+            dw = LTP * self["CTX"]["cog"]["U"][cue]
             W = self["CTX:cog → CTX:ass"].weights
             W[cue] += dw * (Wmax - W[cue]) * (W[cue] - Wmin)
