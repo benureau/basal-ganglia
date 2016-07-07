@@ -205,7 +205,7 @@ class Model(object):
             # print("  No decision")
             reward, cue, best = task.process(trial, -1, RT, debug=debug, model=model)
         else:
-            choice = np.argmax(self["CTX"]["mot"]["V"])
+            choice = np.argmax(self["CTX"]["mot"]["U"])
             # actual_cue = np.argmax(self["CTX"]["cog"]["V"])
             reward, cue, best = task.process(trial, choice, RT, debug=debug, model=model)
             # print("  Motor decision: %d, Chosen cue: %d, Actual cue: %d" % (choice,cue, actual_cue))
@@ -228,7 +228,7 @@ class Model(object):
 
             # Hebbian learning
             # This is the chosen cue by the model (may be different from the actual cue)
-            cue = np.argmax(self["CTX"]["cog"]["V"])
+            cue = np.argmax(self["CTX"]["cog"]["U"])
 
             LTP   = _["Hebbian"]["LTP"]
             dw = LTP * self["CTX"]["cog"]["U"][cue]
