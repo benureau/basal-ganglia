@@ -8,8 +8,8 @@ def session(exp):
         exp.model.process(task=exp.task, trial=trial, model=exp.model)
     return exp.task.records
 
-experiment = Experiment(model = "model-topalidou.json",
-                        task = "task-single-stimulus.json",
+experiment = Experiment(model  = "model-single-stimulus.json",
+                        task   = "task-single-stimulus.json",
                         result = "data/experiment-single-stimulus.npy",
                         report = "data/experiment-single-stimulus.txt",
                         n_session = 25, n_block = 1, seed = None)
