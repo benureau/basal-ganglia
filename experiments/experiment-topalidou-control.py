@@ -76,4 +76,3 @@ from figures import *
 # figure_H_RT(records, [1,1], "Control", "data/experiment-topalidou-control-H-RT.pdf")
 figure_P(records, [1,1], "Control", "data/experiment-topalidou-control-P.pdf")
 # figure_RT(records, [1,1], "Control", "data/experiment-topalidou-control-RT.pdf")
-

@@ -19,8 +19,8 @@ print("Model:    %s" % model.filename)
 print("Task:     %s" % task.filename)
 print("-"*30)
 
-model["GPi:cog → THL:cog"].gain = 0
-model["GPi:mot → THL:mot"].gain = 0
+model["GPi:cog -> THL:cog"].gain = 0
+model["GPi:mot -> THL:mot"].gain = 0
 trial = task[0]
 model.process(task, trial, stop=False, debug=False)
 

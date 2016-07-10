@@ -182,8 +182,8 @@ class Task(object):
         self.records[self.index]["reward"] = reward
         if model is not None:
             self.records[self.index]["value"] = model["value"]
-            self.records[self.index]["CTX:cog -> CTX:ass"] = model["CTX:cog → CTX:ass"].weights
-            self.records[self.index]["CTX:cog -> STR:cog"] = model["CTX:cog → STR:cog"].weights
+            self.records[self.index]["CTX:cog -> CTX:ass"] = model["CTX:cog -> CTX:ass"].weights
+            self.records[self.index]["CTX:cog -> STR:cog"] = model["CTX:cog -> STR:cog"].weights
 
         if debug:
             if best: s = " (+)"

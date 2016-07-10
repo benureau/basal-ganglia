@@ -103,7 +103,7 @@ class Experiment(object):
                 self.msg("-"*30)
         else:
             self.msg("Loading previous results")
-            self.msg(' → "{}"'.format(self.result_file))
+            self.msg(' -> "{}"'.format(self.result_file))
             records = np.load(self.result_file)
             self.msg("-"*30)
 
