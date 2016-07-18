@@ -16,14 +16,14 @@ TASK_JSON = """
         "n_cue"   : 1,
         "cue"     : [ {cue_freq_a}, {cue_freq_b},    0,    0 ],
         "pos"     : [    1,    1,    1,    1 ],
-        "rwd"     : [ {rew_freq_a}, {cue_freq_b}, 0.00, 0.00 ]
+        "rwd"     : [ {rew_freq_a}, {rew_freq_b}, 0.00, 0.00 ]
     }},
     "choice" : {{
         "n_trial" : 100,
         "n_cue"   : 2,
         "cue"     : [    1,    1,    0,    0 ],
         "pos"     : [    1,    1,    1,    1 ],
-        "rwd"     : [ {rew_freq_a}, {cue_freq_b}, 0.00, 0.00 ]
+        "rwd"     : [ {rew_freq_a}, {rew_freq_b}, 0.00, 0.00 ]
     }}
 }}
 """
@@ -58,6 +58,10 @@ def copy_model_json(path, filename):
         f.write(content)
 
 def param_generator():
+    n_trials  = [5, 10, 20, 30, 50, 100, 200]
+    cue_freqs = np.linspace(0.5, 1.0, 11)
+    rew_freqs = np.linspace(0.0, 1.0, 21)
+
     params = []
     idx = 0
     for n_trial in [5, 10, 20, 30, 50, 100, 200]:
@@ -65,10 +69,10 @@ def param_generator():
             for rew_freq in np.linspace(0.0, 1.0, 21):
                 params.append((idx, n_trial, cue_freq, rew_freq))
                 idx += 1
-    return params
+    return n_trials, cue_freqs, rew_freqs, params
 
 
 if __name__ == "__main__":
     copy_model_json('..', 'model-single-stimulus.json')
-    for idx, n_trial, cue_freq, rew_freq in param_generator():
+    for idx, n_trial, cue_freq, rew_freq in param_generator()[-1]:
         write_task_json(idx, n_trial, cue_freq, rew_freq)
