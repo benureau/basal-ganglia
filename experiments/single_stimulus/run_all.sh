@@ -1,5 +1,14 @@
 #!/bin/bash
 # qsub needs Python 2 on the avakas cluster
 export PYENV_VERSION=2.7.12
-qsub -t 0-1616 launch_job.pbs
+INDICES="0-1616"
+
+if (( "$#" > 0 ))
+then
+  INDICES=$1;
+fi
+
+CMD="qsub -t ${INDICES} launch_job.pbs"
+echo $CMD
+eval $CMD
 unset PYENV_VERSION
