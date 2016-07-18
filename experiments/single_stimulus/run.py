@@ -14,7 +14,7 @@ def session(exp):
     return exp.task.records
 
 def run(task_id):
-    experiment = Experiment(model  = "../model-single-stimulus.json",
+    experiment = Experiment(model  = "model-single-stimulus.json",
                             task   = "data/task_sgstim.{}".format(task_id),
                             result = "data/data_sgstim.{}.npy".format(task_id),
                             report = "data/data_sgstim.{}.txt".format(task_id),
@@ -25,4 +25,6 @@ def run(task_id):
 
 
 if __name__ == '__main__':
+    import os
+    print(os.uname(), file=sys.stdout)
     run(sys.argv[1])
