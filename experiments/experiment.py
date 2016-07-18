@@ -86,7 +86,8 @@ class Experiment(object):
 
             for result in tqdm(pool.imap(self.session_init, session_args),
                                total=self.n_session, leave=True, desc=desc,
-                               unit="session", disable=not self.verbose):
+                               unit="session", disable=not self.verbose,
+                               file=sys.stdout):
                 records[index] = result
                 index += 1
             pool.close()
