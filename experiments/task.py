@@ -170,7 +170,8 @@ class Task(object):
             # Get cue corresponding to motor choice
             cue = np.argmax(trial["ass"][:,choice])
             # Get whether this is the best choice
-            best = (np.argmax(trial["cog"]*trial["rwd"]) == cue)
+            present_rwd = trial["cog"]*trial["rwd"]
+            best = max(present_rwd) == present_rwd[cue]
             # Get actual reward
             reward = trial["rnd"] < trial["rwd"][cue]
 
