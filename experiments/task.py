@@ -169,7 +169,9 @@ class Task(object):
             # Check if choice is valid
             valid = (trial["mot"][choice] == 1.0)
             # Get cue corresponding to motor choice
-            cue = np.argmax(trial["ass"][:,choice])
+            cues = np.nonzero(trial["ass"][:,choice])[0]
+            assert(len(cues) == 1)
+            cue = cues[0]
             # Get whether this is the best choice
             present_rwd = trial["cog"]*trial["rwd"]
             best = max(present_rwd) == present_rwd[cue]
@@ -206,8 +208,8 @@ if __name__ == "__main__":
 
     for trial in task:
         # Best choice
-        best = np.argmax(trial["cog"]*trial["rwd"])
-        choice = np.argmax(trial["ass"][best])
+        best_cue = np.argmax(trial["cog"]*trial["rwd"])
+        choice = np.argmax(trial["ass"][best_cue])
         # Random choice
         # n = len(trial["mot"]) - 1 - np.random.randint(0,trial["mot"].sum()-1)
         # choice = np.argsort(trial["mot"])[n]
