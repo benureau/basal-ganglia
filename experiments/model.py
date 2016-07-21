@@ -206,7 +206,7 @@ class Model(object):
             reward, cue, best = task.process(trial, -1, RT, debug=debug, model=model)
         else:
             choice = np.argmax(self["CTX"]["mot"]["U"])
-            # actual_cue = np.argmax(self["CTX"]["cog"]["V"])
+            # actual_cue = np.argmax(self["CTX"]["cog"]["U"])
             reward, cue, best = task.process(trial, choice, RT, debug=debug, model=model)
             # print("  Motor decision: %d, Chosen cue: %d, Actual cue: %d" % (choice,cue, actual_cue))
 
@@ -225,6 +225,7 @@ class Model(object):
             dw = alpha_actor * error * self["STR"]["cog"]["U"][cue]
             W = self["CTX:cog -> STR:cog"].weights
             W[cue] += dw * (Wmax - W[cue]) * (W[cue] - Wmin)
+            W[cue] = np.clip(W[cue], Wmin, Wmax)
 
             # Hebbian learning
             # This is the chosen cue by the model (may be different from the actual cue)
@@ -234,3 +235,4 @@ class Model(object):
             dw = LTP * self["CTX"]["cog"]["U"][cue] * self["CTX"]["ass"]["U"][cue]
             W = self["CTX:cog -> CTX:ass"].weights
             W[cue] += dw * (Wmax - W[cue]) * (W[cue] - Wmin)
+            W[cue] = np.clip(W[cue], Wmin, Wmax)
