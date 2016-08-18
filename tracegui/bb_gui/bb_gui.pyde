@@ -6,7 +6,8 @@ import network
 net = None
 
 
-def load_data(filename):    
+def load_data(filename):
+    """Load data"""
     with open(filename, 'r') as f:
         data = pickle.load(f)
     return data
@@ -19,7 +20,7 @@ def setup():
     frameRate(30)
     textAlign(CENTER)
     rectMode(CENTER)
-    # colorMode(HSB)
+
     filename = "/Users/fabien/research/renc/projects/basal/basal-ganglia/experiments/data/guthrie-symmetry.trace"
     desc, history = load_data(filename)
     net = network.Network(desc, history)
@@ -30,6 +31,6 @@ def draw():
     background(255)
     net.draw()
     if frameCount % 1 == 0:
-        if net.dt_idx < net.dt_n:
+        if net.k < net.dt_n:
             net.step_dt()
             print(net.t)

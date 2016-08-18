@@ -1,5 +1,25 @@
 import layout
 
+class Unit:
+    
+    def __init__(self, xc, yc, u, size=8):
+        """Unit initialization
+        
+        xc:  x coordinate of center
+        yc:  y coordinate of center
+        w:   width (and height)
+        """
+        self.x = xc
+        self.y = yc
+        self.size = size
+        self.u = u
+    
+    def draw(self):
+        stroke(100)
+        fill(int(100*self.u))
+        rect(self.x, self.y, self.size, self.size)
+
+
 class Group:
     
     def __init__(self, name, domain, n, width=40):
@@ -10,26 +30,27 @@ class Group:
         coo = layout.layout_abs[self.domain][self.name]
         self.center = layout.layout_posx[coo[0]], layout.layout_posx[coo[1]]
         
-        self.us = [0.0 for _ in range(n)]
-    
+        # Unit creation
+        self.units = []
+        xc, yc = self.center
+        x_offsets = [-15, -5, 5, 15]
+        y_offsets = [0] if self.n == 4 else [-15, -5, 5, 15]
+        for y_offset in y_offsets:
+            for x_offset in x_offsets:
+                unit = Unit(xc + x_offset, yc + y_offset, 0.0, size=8)
+                self.units.append(unit)
+            
     def update(self, Us):
         assert len(Us) == self.n
-        self.us = Us
+        for u, unit in zip(Us, self.units):
+            unit.u = u
         
     def draw(self):
-        xc, yc = self.center
         # label
         fill(0)
         textSize(16)
-        text(self.name, xc, yc-30)
+        text(self.name, self.center[0], self.center[1]-30)
         
-        # units        
-        x_offsets = [-15, -5, 5, 15]
-        y_offsets = [0] if self.n == 4 else [-15, -5, 5, 15]
-        u_iter = iter(self.us)
-        for y_offset in y_offsets:
-            for x_offset in x_offsets:
-                u = next(u_iter)
-                stroke(100)
-                fill(int(100*u))
-                rect(xc + x_offset, yc + y_offset, 8, 8)
+        # unit
+        for unit in self.units:
+            unit.draw()
