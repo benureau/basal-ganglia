@@ -2,7 +2,7 @@ import layout
 
 class Unit:
     
-    def __init__(self, xc, yc, u, size=8):
+    def __init__(self, xc, yc, act_fun, act_min, act_max, size=8):
         """Unit initialization
         
         xc:  x coordinate of center
@@ -11,20 +11,33 @@ class Unit:
         """
         self.x = xc
         self.y = yc
+        self.act_fun = act_fun
+        self.act_min = act_min
+        self.act_max = act_max
+        if self.act_fun == 'Clamp':
+            self.act_max = 100.0
+        if self.act_fun == 'Sigmoid':
+            self.act_max = 20.0
+
         self.size = size
-        self.u = u
+        self.u = 0.0
     
     def draw(self):
-        stroke(100)
-        fill(int(100*self.u))
+        if self.u > self.act_max:
+            print('max reached: {}'.format(self.u))
+        stroke(0)
+        fill(int(255*((self.act_max - self.u) / (self.act_max - self.act_min))))
         rect(self.x, self.y, self.size, self.size)
 
 
 class Group:
     
-    def __init__(self, name, domain, n, width=40):
+    def __init__(self, name, domain, act_fun, act_min, act_max, n, width=40):
         self.name   = name
         self.domain = domain
+        self.act_fun = act_fun
+        self.act_min = act_min
+        self.act_max = act_max
         self.n      = n
         
         coo = layout.layout_abs[self.domain][self.name]
@@ -37,7 +50,7 @@ class Group:
         y_offsets = [0] if self.n == 4 else [-15, -5, 5, 15]
         for y_offset in y_offsets:
             for x_offset in x_offsets:
-                unit = Unit(xc + x_offset, yc + y_offset, 0.0, size=8)
+                unit = Unit(xc + x_offset, yc + y_offset, self.act_fun, self.act_min, self.act_max, size=8)
                 self.units.append(unit)
             
     def update(self, Us):

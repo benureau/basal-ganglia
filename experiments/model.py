@@ -36,18 +36,18 @@ class Model(object):
 
 
         self._structures = {
-            "CTX" : { "cog" : Group( 4, activation = clamp),
-                      "mot" : Group( 4, activation = clamp),
-                      "ass" : Group(16, activation = clamp) },
-            "STR" : { "cog" : Group( 4, activation = sigmoid),
-                      "mot" : Group( 4, activation = sigmoid),
-                      "ass" : Group(16, activation = sigmoid) },
-            "STN" : { "cog" : Group( 4, activation = clamp),
-                      "mot" : Group( 4, activation = clamp) },
-            "GPi" : { "cog" : Group( 4, activation = clamp),
-                      "mot" : Group( 4, activation = clamp) },
-            "THL" : { "cog" : Group( 4, activation = clamp),
-                      "mot" : Group( 4, activation = clamp) },
+            "CTX" : { "cog" : Group( 4, activation=clamp),
+                      "mot" : Group( 4, activation=clamp),
+                      "ass" : Group(16, activation=clamp) },
+            "STR" : { "cog" : Group( 4, activation=sigmoid),
+                      "mot" : Group( 4, activation=sigmoid),
+                      "ass" : Group(16, activation=sigmoid) },
+            "STN" : { "cog" : Group( 4, activation=clamp),
+                      "mot" : Group( 4, activation=clamp) },
+            "GPi" : { "cog" : Group( 4, activation=clamp),
+                      "mot" : Group( 4, activation=clamp) },
+            "THL" : { "cog" : Group( 4, activation=clamp),
+                      "mot" : Group( 4, activation=clamp) },
         }
         for name, structure in self._structures.items():
             for group in structure.values():

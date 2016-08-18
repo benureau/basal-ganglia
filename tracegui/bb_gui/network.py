@@ -21,15 +21,15 @@ class Network:
         
     def create_network(self):
         """Read the description and create the network's object"""
-        # first groups
+        # first, groups
         for msg in self.desc:
             if msg[0] == 'group':
-                msg_type, uid, name, kind, n = msg
-                grp = Group(name, kind, n)
+                msg_type, uid, name, kind, act_fun, act_min, act_max, n = msg
+                grp = Group(name, kind, act_fun, act_min, act_max, n)
                 self.groups[uid] = grp
                 self.groupmap[name] = grp
 
-        # then, links, that need group to already exist.
+        # then, links, that need groups to already exist.
         for msg in self.desc:
             if msg[0] == 'link':
                 msg_type, uid, pre, post, kind, n = msg

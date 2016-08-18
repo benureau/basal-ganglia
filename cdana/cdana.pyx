@@ -90,7 +90,7 @@ cdef class Group:
     cdef int         _history_index
     cdef double[:,:] _history
 
-    def __init__(self, shape, tau=0.01, rest=0.0, noise=0.0, activation = Identity()):
+    def __init__(self, shape, tau=0.01, rest=0.0, noise=0.0, activation=Identity()):
         self._tau = tau
         self._rest = rest
         self._noise = noise
@@ -100,6 +100,11 @@ cdef class Group:
         self._activation = activation
         self._history_index = 0
         self._history = np.zeros((10000, len(self._units)))
+
+    property activation:
+        """ Activity history (firing rate) """
+        def __get__(self):
+            return self._activation
 
     property history:
         """ Activity history (firing rate) """

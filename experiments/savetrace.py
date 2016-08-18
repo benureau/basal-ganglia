@@ -7,6 +7,14 @@ class TracedGroup:
         self.name = name
         self.kind = kind
         self.group = group
+        self.act_fun = type(group.activation).__name__
+        if self.act_fun == 'Clamp':
+            self.act_min = group.activation.min
+            self.act_max = group.activation.max
+        else:
+            assert self.act_fun == 'Sigmoid'
+            self.act_min = group.activation.Vmin
+            self.act_max = group.activation.Vmax
 
     def update(self):
         return [float(u) for u in self.group.U]
@@ -52,7 +60,9 @@ class Trace:
     def description(self):
         desc = []
         for uid, group in self.groups.items():
-            desc.append(('group', uid, group.name, group.kind, len(group.group.U)))
+            desc.append(('group', uid, group.name, group.kind,
+                         group.act_fun, group.act_min, group.act_max,
+                         len(group.group.U)))
         return desc
 
     def new_trial(self, trial):
