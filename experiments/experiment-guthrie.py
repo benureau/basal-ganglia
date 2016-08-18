@@ -12,12 +12,16 @@ def session(exp):
         exp.model.process(task=exp.task, trial=trial, model = exp.model)
     return exp.task.records
 
-experiment = Experiment(model = "model-guthrie.json",
-                        task = "task-guthrie.json",
-                        result = "data/experiment-guthrie.npy",
-                        report = "data/experiment-guthrie.txt",
-                        n_session = 250, n_block = 1, seed = None)
-records = experiment.run(session, "Protocol 1")
+model_name = 'guthrie'
+task_name  = 'symmetry'
+
+experiment = Experiment(model  = "model-{}.json".format(model_name),
+                        task   = "task-{}.json".format(task_name),
+                        result = "data/{}-{}.npy".format(model_name, task_name),
+                        report = "data/{}-{}.txt".format(model_name, task_name),
+                        trace_file = "data/{}-{}.trace".format(model_name, task_name),
+                        n_session = 1, n_block = 1, seed = 0)
+records = experiment.run(session, "Protocol 1", force=True)
 records = np.squeeze(records)
 
 # -----------------------------------------------------------------------------
@@ -80,6 +84,5 @@ plt.text(n_trial+1, RT_mean[-1], "%d ms" % RT_mean[-1],
 plt.text(0, RT_mean[0], "%d" % RT_mean[0],
          ha="right", va="center", color="r")
 
-plt.savefig("data/experiment-guthrie.pdf")
+plt.savefig("data/{}.pdf".format(name))
 plt.show()
-

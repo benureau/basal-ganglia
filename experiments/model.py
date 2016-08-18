@@ -13,6 +13,7 @@ class Model(object):
         self.filename = filename
         with open(filename) as f:
             self.parameters = json.load(f)
+        self.trace = None
         self.setup()
 
 
@@ -53,7 +54,7 @@ class Model(object):
                 group.tau  = _[name]["tau"]
                 group.rest = _[name]["rest"]
                 group.noise = _[name]["noise"]
-        self._structures["value"] = np.zeros(4)
+        self._structures["value"] = np.zeros(4) # FIXME: verify that.
 
         CTX = self["CTX"]
         STR = self["STR"]
@@ -136,6 +137,10 @@ class Model(object):
             if key in _["gain"].keys():
                 link.gain = _["gain"][key]
 
+        if self.trace is not None:
+            self.trace.initialize_model(self)
+
+
 
     def __getitem__(self, key):
         try:
@@ -148,8 +153,9 @@ class Model(object):
         for group in self._groups:
             group.flush()
 
-
     def iterate(self, dt):
+        if self.trace is not None:
+            self.trace.dt_update(dt)
 
         # Flush all connections
         for link in self._links.values():
@@ -158,13 +164,19 @@ class Model(object):
         # Propagate activities
         for link in self._links.values():
             link.propagate()
+            if self.trace is not None:
+                self.trace.link_update(link)
 
         # Evaluate activity
         for group in self._groups:
             group.evaluate(dt)
+            if self.trace is not None:
+                self.trace.group_update(group)
 
 
     def process(self, task, trial, stop=True, debug=False, model=None):
+        if self.trace is not None:
+            self.trace.new_trial(trial)
 
         _ = self.parameters
 

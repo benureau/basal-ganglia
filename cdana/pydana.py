@@ -17,7 +17,7 @@ class Clamp(object):
         self.min, self.max = min, max
 
     def call(self, x):
-        return np.clip(x, low=self.min, high=self.max)
+        return np.clip(x, self.min, self.max)
 
 
 class UniformNoise:

@@ -3,12 +3,12 @@ import colorsys
 
 from bokeh import io
 from bokeh import plotting as bkp
-from bokeh.plotting import show
 from bokeh.core.properties import value
 from bokeh.models import FixedTicker
 from bokeh.models.mappers import LinearColorMapper
 
-from ipywidgets.widgets import interact, fixed, IntSlider, FloatSlider, SelectionSlider
+import ipywidgets.widgets
+from ipywidgets.widgets import fixed, IntSlider, FloatSlider, SelectionSlider
 
 
     ## Disable autoscrolling
@@ -21,6 +21,15 @@ IPython.OutputArea.prototype._should_scroll = function(lines) {
 }
 """
 display(Javascript(disable_js))
+
+
+    ## Larger labels
+
+from IPython.display import HTML
+
+display(HTML('''<style>
+    .widget-label { min-width: 20ex !important; }
+</style>'''))
 
 
     ## Load bokeh for jupyter
@@ -56,3 +65,15 @@ def figure(*args, **kwargs):
     fig = bkp.figure(*args, **kwargs)
     tweak_fig(fig)
     return fig
+
+
+    ## Removing returns
+
+def show(*args, **kwargs):
+    bkp.show(*args, **kwargs)
+
+def interact(*args, **kwargs):
+    ipywidgets.widgets.interact(*args, **kwargs)
+
+def select(name, options):
+    return SelectionSlider(description=name,  options=list(options))

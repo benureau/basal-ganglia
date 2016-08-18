@@ -8,16 +8,19 @@ import json
 import time
 import os
 import argparse
+import multiprocessing
+
 import numpy as np
 from tqdm import tqdm
-import multiprocessing
+
+import savetrace
 from task import Task
 from model import Model
 
 
 class Experiment(object):
     def __init__(self, model, task, result, report, n_session, n_block,
-                       seed=None, rootdir=None, verbose=True):
+                       seed=None, rootdir=None, verbose=True, trace_file=None):
         """Initialize an exeperiment.
 
         rootdir: root directory for the `model`, `task`, `result` and `report`
@@ -36,6 +39,10 @@ class Experiment(object):
         self.n_session   = n_session
         self.n_block     = n_block
         self.seed        = seed
+
+        if trace_file is not None:
+            tracepath = os.path.abspath(os.path.join(self.rootdir, trace_file))
+            self.trace = savetrace.Trace(tracepath)
 
         if self.seed is None:
             self.seed = np.random.randint(0, 1000)
@@ -82,7 +89,9 @@ class Experiment(object):
             pool = multiprocessing.Pool(n_workers)
             # different seed for different sessions
             seeds = np.random.randint(0, 1000000000, size=self.n_session)
-            session_args = [(self, session, seed) for seed in seeds]
+            traces = (self.trace,) + (len(seeds)-1)*(None,)
+            session_args = [(self, session, seed, trace)
+                            for seed, trace in zip(seeds, traces)]
 
             for result in tqdm(pool.imap(self.session_init, session_args),
                                total=self.n_session, leave=True, desc=desc,
@@ -110,12 +119,15 @@ class Experiment(object):
 
         return records
 
-    @classmethod
     def session_init(cls, args):
         """Initialize the random seed of a process and run a session."""
-        experiment, session, seed = args
+        experiment, session, seed, trace = args
+        experiment.model.trace = trace
         np.random.seed(seed)
-        return session(experiment)
+        results = session(experiment)
+        if trace is not None:
+            trace.save()
+        return results
 
     def write_report(self):
         report = { "seed"      : self.seed,
