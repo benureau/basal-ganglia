@@ -93,9 +93,15 @@ class Connection(object):
     def __init__(self, source, target, weights, gain):
         self.source, self.target = source, target
         self.weights, self.gain = weights, gain # weight matrix and gain (scalar)
-        self.source_2D  = self.source.view().reshape(int(len(self.source)/4), 4)
-        self.target_2D  = self.target.view().reshape(int(len(self.target)/4), 4)
-        self.weights_2D = self.weights.view().reshape(int(len(self.weights)/4), 4)
+
+        ns, nt, nw = len(source), len(target), len(weights)
+        self.source_2D  = self.source.view().reshape(int(ns/4), 4)
+        self.target_2D  = self.target.view().reshape(int(nt/4), 4)
+        if nw >= ns:
+            self.weights_2D = self.weights.view().reshape(int(nw/ns), ns)
+
+    def flush(self):
+        self.target *= 0.0
 
 class OneToOne(Connection):
     def propagate(self):

@@ -40,6 +40,7 @@ class Experiment(object):
         self.n_block     = n_block
         self.seed        = seed
 
+        self.trace = None
         if trace_file is not None:
             tracepath = os.path.abspath(os.path.join(self.rootdir, trace_file))
             self.trace = savetrace.Trace(tracepath)
