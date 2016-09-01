@@ -8,19 +8,21 @@ class AtomicLink:
         self.w    = 0.0
         
     def draw(self):
-        fill(int(100*(self.u-0.25)/0.5))
-        line(self.pre.x, self.pre.y, self.post.x, self.post.y
+        a = int(100.0*(1-self.w))
+        stroke(a, a, a, 128)
+        strokeWeight(2.0)
+        line(self.pre.x, self.pre.y, self.post.x, self.post.y)
 
 
 class Link:
     
-    def __init__(self, kind, pre, post, n, self.groupmap,):
+    def __init__(self, kind, pre, post, n, groupmap):
         self.kind = kind
         self.pre_name  = pre
         self.post_name = post
         self.pre_grp   = groupmap[pre]
         self.post_grp  = groupmap[post]
-        self.n      = n
+        self.n         = n
 
         self.create_atomics()
 #        self.weights = [0.0 for _ in range(n)]
@@ -38,7 +40,6 @@ class Link:
                 atomic.w = w
         
     def draw(self):
-        return
-        # for atomic in self.atomics:
-        #     atomic.draw()     
+        for atomic in self.atomics:
+            atomic.draw()
         

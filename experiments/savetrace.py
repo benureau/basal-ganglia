@@ -24,7 +24,7 @@ class TracedLink:
 
     def __init__(self, name, link):
         pre, post = name.split(' -> ')
-        self.pre, self.post = pre.split(':'), post.split(':')
+        self.pre, self.post = tuple(pre.split(':')), tuple(post.split(':'))
         self.kind = type(link).__name__
         self.link = link
 
@@ -63,6 +63,8 @@ class Trace:
             desc.append(('group', uid, group.name, group.kind,
                          group.act_fun, group.act_min, group.act_max,
                          len(group.group.U)))
+        for uid, link in self.links.items():
+            desc.append(('link', uid, link.kind, link.pre, link.post, len(link.link.weights)))
         return desc
 
     def new_trial(self, trial):

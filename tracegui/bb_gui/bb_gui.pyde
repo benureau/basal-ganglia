@@ -24,6 +24,7 @@ def setup():
     filename = "/Users/fabien/research/renc/projects/basal/basal-ganglia/experiments/data/guthrie-symmetry.trace"
     desc, history = load_data(filename)
     net = network.Network(desc, history)
+    net.step_dt()
     
 
 def draw():
@@ -33,4 +34,4 @@ def draw():
     if frameCount % 1 == 0:
         if net.k < net.dt_n:
             net.step_dt()
-            print(net.t)
+            #print(net.t)

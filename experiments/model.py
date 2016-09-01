@@ -72,6 +72,8 @@ class Model(object):
         W1 = (2 * np.eye(4) - np.ones((4, 4))).ravel()
         W2 = (2 * np.eye(16) - np.ones((16, 16))).ravel()
 
+        print(weights(4))
+
         self._links = {
             "CTX:cog -> STR:cog" :
                 OneToOne(CTX["cog"]["U"], STR["cog"]["Isyn"], weights(4), 0.0),

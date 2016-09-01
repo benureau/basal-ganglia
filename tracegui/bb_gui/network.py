@@ -1,4 +1,5 @@
 from group import Group
+from link import Link
 
 
 class Network:
@@ -25,14 +26,14 @@ class Network:
         for msg in self.desc:
             if msg[0] == 'group':
                 msg_type, uid, name, kind, act_fun, act_min, act_max, n = msg
-                grp = Group(name, kind, act_fun, act_min, act_max, n)
+                grp = Group(name, kind, act_fun, act_min, act_max, n, size=60)
                 self.groups[uid] = grp
-                self.groupmap[name] = grp
+                self.groupmap[(name, kind)] = grp
 
         # then, links, that need groups to already exist.
         for msg in self.desc:
             if msg[0] == 'link':
-                msg_type, uid, pre, post, kind, n = msg
+                msg_type, uid, kind, pre, post, n = msg
                 self.links[uid] = Link(kind, pre, post, n, self.groupmap) 
                     
     def step_dt(self):
@@ -43,10 +44,12 @@ class Network:
         for uid, us in updates:
             if uid in self.groups:
                 self.groups[uid].update(us)
+            if uid in self.links:
+                self.links[uid].update(us)
                                                 
     def draw(self):
-        for group in self.groups.values():
-            group.draw()
         for link in self.links.values():
             link.draw()
+        for group in self.groups.values():
+            group.draw()
         
