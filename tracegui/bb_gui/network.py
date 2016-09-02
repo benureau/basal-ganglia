@@ -1,25 +1,26 @@
+from layout import layout_links
 from group import Group
 from link import Link
 
 
 class Network:
     """Network class: holds the Group and Link objects, manages time."""
-    
+
     def __init__(self, desc, history):
         self.desc    = desc
         self.history = history
         self.trial   = 0
         self.k       = 0    # number of dt iteration (reset at trial start)
         self.t       = 0.0  # time elapsed (reset at trial start)
-        
+
         self.groups   = {}
         self.groupmap = {}
         self.links    = {}
         self.create_network()
-        
+
         self.trial_n = len(history)
         self.dt_n    = len(history[0][1])
-        
+
     def create_network(self):
         """Read the description and create the network's object"""
         # first, groups
@@ -34,8 +35,11 @@ class Network:
         for msg in self.desc:
             if msg[0] == 'link':
                 msg_type, uid, kind, pre, post, n = msg
-                self.links[uid] = Link(kind, pre, post, n, self.groupmap) 
-                    
+                cp = layout_links.get((pre, post), None)
+                if cp is not None:
+                    print((pre, post), cp)
+                self.links[uid] = Link(kind, pre, post, n, self.groupmap, cp=cp)
+
     def step_dt(self):
         t, updates = self.history[self.trial][1][self.k]
         self.t = t
@@ -46,10 +50,9 @@ class Network:
                 self.groups[uid].update(us)
             if uid in self.links:
                 self.links[uid].update(us)
-                                                
+
     def draw(self):
         for link in self.links.values():
             link.draw()
         for group in self.groups.values():
             group.draw()
-        
