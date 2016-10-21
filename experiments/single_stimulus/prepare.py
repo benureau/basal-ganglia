@@ -58,15 +58,15 @@ def copy_model_json(path, filename):
         f.write(content)
 
 def param_generator():
-    n_trials  = [5, 10, 20, 30, 50, 100, 200]
+    n_trials  = [0] # [5, 10, 20, 30, 50, 100, 200]
     cue_freqs = np.linspace(0.5, 1.0, 11)
     rew_freqs = np.linspace(0.0, 1.0, 21)
 
     params = []
     idx = 0
-    for n_trial in [5, 10, 20, 30, 50, 100, 200]:
-        for cue_freq in np.linspace(0.5, 1.0, 11):
-            for rew_freq in np.linspace(0.0, 1.0, 21):
+    for n_trial in n_trials:
+        for cue_freq in cue_freqs:
+            for rew_freq in rew_freqs:
                 params.append((idx, n_trial, cue_freq, rew_freq))
                 idx += 1
     return n_trials, cue_freqs, rew_freqs, params
