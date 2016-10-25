@@ -2,6 +2,7 @@ import numpy as np
 import colorsys
 
 from bokeh import io
+from bokeh.layouts import row, column
 from bokeh import plotting as bkp
 from bokeh.core.properties import value
 from bokeh.models import FixedTicker
@@ -96,7 +97,7 @@ def graph_aux1(records, key, fig=None, lines=None, handle=None, show=True):
     assert len(P_mean.shape) == 1, "P_mean has the wrong shape. Use graph_aux2() instead."
 
     if fig is None:
-        fig = figure(y_range=y_ranges.get(key, None), plot_width=900, plot_height=400, tools="")
+        fig = figure(y_range=y_ranges.get(key, None), plot_width=900, plot_height=300, tools="")
 
     if lines is None:
         lines = {}
@@ -104,7 +105,7 @@ def graph_aux1(records, key, fig=None, lines=None, handle=None, show=True):
     else:
         lines['mean'].data_source.data['x'] = range(0, len(P_mean))
         lines['mean'].data_source.data['y'] = P_mean
-        io.push_notebook(handle=handle)
+        #io.push_notebook(handle=handle)
 
     if show: # new handle
         handle = bkp.show(fig, notebook_handle=True)
@@ -118,7 +119,7 @@ def graph_aux2(records, key, fig=None, lines=None, handle=None, show=True):
     assert len(P_mean.shape) > 1, "P_mean has the wrong shape. Use graph_aux1() instead."
 
     if fig is None:
-        fig = figure(y_range=y_ranges.get(key, None), plot_width=900, plot_height=400, tools="")
+        fig = figure(y_range=y_ranges.get(key, None), plot_width=900, plot_height=300, tools="")
 
 
     line_colors = {'A': "#fa6900", 'B': "#69d2e7"}
@@ -132,7 +133,7 @@ def graph_aux2(records, key, fig=None, lines=None, handle=None, show=True):
         for j, stimulus in enumerate(['A', 'B']):
             lines['mean'][j].data_source.data['x'] = range(0, len(P_mean[:,j]))
             lines['mean'][j].data_source.data['y'] = P_mean[:,j]
-        io.push_notebook(handle=handle)
+        #io.push_notebook(handle=handle)
 
     if show: # new handle
         handle = bkp.show(fig, notebook_handle=True)
