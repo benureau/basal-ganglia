@@ -139,3 +139,55 @@ def graph_aux2(records, key, fig=None, lines=None, handle=None, show=True):
         handle = bkp.show(fig, notebook_handle=True)
 
     return handle, fig, lines
+
+
+    ## Cue choice graph
+
+def cue_count(cues):
+    """Return to occurences of each cues on the rows of cues"""
+    table = {}
+    for c in [-1, 0, 1]:
+        table[c] = (cues == c).sum(0)/cues.shape[0]
+    return table
+
+def rew_count(cues, rews):
+    table = {}
+    for c in [-1, 0, 1]:
+        table[c] = ((cues == c)*rews).sum(0)/cues.shape[0]
+    return table
+
+
+def cue(records, fig=None, lines=None, handle=None, show=True):
+    """Display graph of best choice"""
+    cues = records["cue"]
+    cue_table = cue_count(cues)
+
+    if fig is None:
+        fig = figure(y_range=[-1.3, 1.3],
+                     plot_width=900, plot_height=400, tools="")
+
+    x   = list(range(1, cues.shape[1]+1)) + list(range(cues.shape[1], 0, -1))
+    y_1 = (              [ 0.5*c_1 for c_1 in cue_table[-1]] +
+           list(reversed([-0.5*c_1 for c_1 in cue_table[-1]])))
+    y0  = (              [ 0.5*c_1 for c_1 in cue_table[-1]] +
+           list(reversed([ 0.5*c_1 + c0 for c_1, c0 in zip(cue_table[-1], cue_table[0])])))
+    y1  = (              [-0.5*c_1 for c_1 in cue_table[-1]] +
+           list(reversed([-0.5*c_1 - c1 for c_1, c1 in zip(cue_table[-1], cue_table[1])])))
+    if lines is None:
+        lines = {}
+        lines[ 0] = fig.patch(x,  y0, legend='A', fill_color="#fa6900", fill_alpha=0.5, line_color="#fa6900")
+        lines[ 1] = fig.patch(x,  y1, legend='B', fill_color="#69d2e7", fill_alpha=0.5, line_color="#69d2e7")
+        lines[-1] = fig.patch(x, y_1, legend='no choice', fill_color="#aaaaaa", fill_alpha=0.5, line_color="#aaaaaa")
+    else:
+        lines[-1].data_source.data['x'] = x
+        lines[-1].data_source.data['y'] = y_1
+        lines[ 0].data_source.data['x'] = x
+        lines[ 0].data_source.data['y'] = y0
+        lines[ 1].data_source.data['x'] = x
+        lines[ 1].data_source.data['y'] = y1
+        io.push_notebook(handle)
+
+    if show: # new handle
+        handle = bkp.show(fig, notebook_handle=True)
+
+    return handle, fig, lines
