@@ -70,10 +70,71 @@ def figure(*args, **kwargs):
     ## Removing returns
 
 def show(*args, **kwargs):
-    bkp.show(*args, **kwargs)
+    return bkp.show(*args, **kwargs)
 
 def interact(*args, **kwargs):
     ipywidgets.widgets.interact(*args, **kwargs)
 
 def select(name, options):
     return SelectionSlider(description=name,  options=list(options))
+
+    ## Graphs
+
+def best(records, fig=None, lines=None, handle=None, show=True):
+    return graph_aux1(records, key='best', fig=fig, lines=lines, handle=handle, show=show)
+
+def value(records, fig=None, lines=None, handle=None, show=True):
+    return graph_aux2(records, key='value', fig=fig, lines=lines, handle=handle, show=show)
+
+
+y_ranges = {'best': (0.0, 1.2), 'value': (0.25, 0.75)}
+
+def graph_aux1(records, key, fig=None, lines=None, handle=None, show=True):
+    """Display graph of best choice"""
+
+    P_mean = np.mean(records[key], axis=0)
+    assert len(P_mean.shape) == 1, "P_mean has the wrong shape. Use graph_aux2() instead."
+
+    if fig is None:
+        fig = figure(y_range=y_ranges.get(key, None), plot_width=900, plot_height=400, tools="")
+
+    if lines is None:
+        lines = {}
+        lines['mean'] = fig.line(range(0, len(P_mean)), P_mean)
+    else:
+        lines['mean'].data_source.data['x'] = range(0, len(P_mean))
+        lines['mean'].data_source.data['y'] = P_mean
+        io.push_notebook(handle=handle)
+
+    if show: # new handle
+        handle = bkp.show(fig, notebook_handle=True)
+
+    return handle, fig, lines
+
+def graph_aux2(records, key, fig=None, lines=None, handle=None, show=True):
+    """Display graph of best choice"""
+
+    P_mean = np.mean(records[key], axis=0)
+    assert len(P_mean.shape) > 1, "P_mean has the wrong shape. Use graph_aux1() instead."
+
+    if fig is None:
+        fig = figure(y_range=y_ranges.get(key, None), plot_width=900, plot_height=400, tools="")
+
+
+    line_colors = {'A': "#fa6900", 'B': "#69d2e7"}
+
+    if lines is None:
+        lines = {'mean': []}
+        for j, stimulus in enumerate(['A', 'B']):
+            lines['mean'].append(fig.line(range(0, len(P_mean[:,j])), P_mean[:,j],
+                                          line_color=line_colors[stimulus], legend=stimulus), )
+    else:
+        for j, stimulus in enumerate(['A', 'B']):
+            lines['mean'][j].data_source.data['x'] = range(0, len(P_mean[:,j]))
+            lines['mean'][j].data_source.data['y'] = P_mean[:,j]
+        io.push_notebook(handle=handle)
+
+    if show: # new handle
+        handle = bkp.show(fig, notebook_handle=True)
+
+    return handle, fig, lines
