@@ -18,7 +18,7 @@ def run(task_id):
                             task   = "data/task_sgstim.{}".format(task_id),
                             result = "data/data_sgstim.{}.npy".format(task_id),
                             report = "data/data_sgstim.{}.txt".format(task_id),
-                            n_session=100, n_block=1, seed=0,
+                            n_session=100, n_block=2, seed=0,
                             verbose=True, rootdir=rootdir)
     experiment.run(session, "Single Stimulus",
                    save=True, force=False, parse=False)
