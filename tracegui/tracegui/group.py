@@ -48,21 +48,29 @@ class Group:
 
         coo = layout.layout_abs[self.domain][self.name]
         self.center = layout.layout_posx[coo[0]], layout.layout_posx[coo[1]]
+        self.size   = size
 
-        # Unit creation
+        self.create_units()
+
+    def create_units(self):
+        """Create the units"""
         pad = int(self.u_size/2+1)
         self.units = []
         xc, yc = self.center
-        if self.name == 'STR':
-            xc += 2*pad
-        if self.name == 'GPi':
-            xc -= 2*pad
-        x_offsets = [-3*pad, -pad, pad, 3*pad]
-        y_offsets = [0] if self.n == 4 else [-3*pad, -pad, pad, 3*pad]
-        for y_offset in y_offsets:
-            for x_offset in x_offsets:
-                unit = Unit(xc + x_offset, yc + y_offset, self.act_fun, self.act_min, self.act_max, size=self.u_size)
+        # if self.name == 'STR': # REMOVEME
+        #     xc += 2*pad
+        # if self.name == 'GPi':
+        #     xc -= 2*pad
+        offsets = [-3*pad, -pad, pad, 3*pad]
+        if self.n == 4:
+            for x_off, y_off in zip(offsets, offsets):
+                unit = Unit(xc + x_off, yc + y_off, self.act_fun, self.act_min, self.act_max, size=self.u_size)
                 self.units.append(unit)
+        else:
+            for y_off in offsets:
+                for x_off in offsets:
+                    unit = Unit(xc + x_off, yc + y_off, self.act_fun, self.act_min, self.act_max, size=self.u_size)
+                    self.units.append(unit)
 
     def update(self, Us):
         assert len(Us) == self.n
@@ -70,11 +78,17 @@ class Group:
             unit.u = u
 
     def draw(self):
+
         # label
         strokeWeight(1.0)
         fill(0)
         textSize(16)
         text(self.name, self.center[0], self.center[1]-30)
+
+        # unit box
+        noFill()
+        stroke(0)
+        rect(self.center[0], self.center[1], self.size, self.size)
 
         # unit
         for unit in self.units:

@@ -82,8 +82,10 @@ class Link:
     def create_atomics(self):
         self.atomics = []
         if self.kind == 'OneToOne':
-            for pre_u, post_u in zip(self.pre_grp.units, self.post_grp.units):
-                self.atomics.append(AtomicLink(pre_u, post_u, cp=self.cp))
+            assert self.pre_grp == self.post_grp
+            for i in range(self.pre_grp.n):
+                self.atomics.append(AtomicLink(self.pre_grp,  k,
+                                               self.post_grp, k, cp=self.cp))
 
     def update(self, weights):
         assert len(weights) == self.n
