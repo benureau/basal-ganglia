@@ -16,8 +16,9 @@ for idx, n_trial, cue_freq, rew_freq in param_generator()[-1]:
     for filepath in [os.path.join(rootdir, 'data/data_sgstim.{}.npy'.format(idx)),
                      os.path.join(rootdir, 'data/data_sgstim.{}.txt'.format(idx)),
                      os.path.join(rootdir, 'data/task_sgstim.{}'.format(idx)),
-                     os.path.join(rootdir, 'data/data_sgstim.out-{}'.format(idx)),
-                     os.path.join(rootdir, 'data/data_sgstim.err-{}'.format(idx))]:
+                     #os.path.join(rootdir, 'data/data_sgstim.out-{}'.format(idx)),
+                     #os.path.join(rootdir, 'data/data_sgstim.err-{}'.format(idx))
+                    ]:
         if not os.path.exists(filepath):
             print('error: `{}` not found'.format(filepath))
             missing.add(idx)

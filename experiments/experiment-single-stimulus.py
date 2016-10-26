@@ -8,11 +8,11 @@ def session(exp):
         exp.model.process(task=exp.task, trial=trial, model=exp.model)
     return exp.task.records
 
-experiment = Experiment(model  = "model-single-stimulus.json",
+experiment = Experiment(model  = "model-single-stimulus_nonhebb.json",
                         task   = "task-single-stimulus.json",
                         result = "data/experiment-single-stimulus.npy",
                         report = "data/experiment-single-stimulus.txt",
-                        n_session = 10, n_block = 2, seed = 0)
+                        n_session = 10, n_block = 1, seed = 0)
 records = experiment.run(session, "Single Stimulus")
 records = np.squeeze(records)
 
