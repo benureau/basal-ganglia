@@ -58,9 +58,9 @@ def copy_model_json(path, filename):
         f.write(content)
 
 def param_generator():
-    n_trials  = [0, 5, 10, 20, 30, 50, 100, 200]
-    cue_freqs = np.linspace(0.5, 1.0, 11)
-    rew_freqs = np.linspace(0.0, 1.0, 21)
+    n_trials  = [0, 10, 20, 50, 100]
+    cue_freqs = [0.45, 0.50, 0.55, 0.60, 0.75, 0.90, 0.95, 1.0]
+    rew_freqs = [0.0, 0.10, 0.25, 0.45, 0.50, 0.55, 0.60, 0.76, 0.90, 1.0]
 
     params = []
     idx = 0
@@ -73,6 +73,6 @@ def param_generator():
 
 
 if __name__ == "__main__":
-    copy_model_json('..', 'model-single-stimulus_nonhebb.json')
+    copy_model_json('..', 'model-single-stimulus.json')
     for idx, n_trial, cue_freq, rew_freq in param_generator()[-1]:
         write_task_json(idx, n_trial, cue_freq, rew_freq)

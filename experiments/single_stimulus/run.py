@@ -14,7 +14,7 @@ def session(exp):
     return exp.task.records
 
 def run(task_id):
-    experiment = Experiment(model  = "model-single-stimulus_nonhebb.json",
+    experiment = Experiment(model  = "model-single-stimulus.json",
                             task   = "data/task_sgstim.{}".format(task_id),
                             result = "data/data_sgstim.{}.npy".format(task_id),
                             report = "data/data_sgstim.{}.txt".format(task_id),

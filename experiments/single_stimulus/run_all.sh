@@ -1,7 +1,7 @@
 #!/bin/bash
 # qsub needs Python 2 on the avakas cluster
 export PYENV_VERSION=2.7.12
-INDICES="0-1847"
+INDICES="0-559"
 
 if (( "$#" > 0 ))
 then

@@ -246,7 +246,7 @@ class Model(object):
             cue = np.argmax(self["CTX"]["cog"]["U"])
 
             LTP   = _["Hebbian"]["LTP"]
-            dw = LTP * self["CTX"]["cog"]["U"][cue] * self["CTX"]["ass"]["U"][cue]
+            dw = LTP * self["CTX"]["cog"]["U"][cue] # * self["CTX"]["ass"]["U"][cue]
             W = self["CTX:cog -> CTX:ass"].weights
             W[cue] += dw * (Wmax - W[cue]) * (W[cue] - Wmin)
             W[cue] = np.clip(W[cue], Wmin, Wmax)
