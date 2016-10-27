@@ -73,6 +73,6 @@ def param_generator():
 
 
 if __name__ == "__main__":
-    copy_model_json('..', 'model-single-stimulus.json')
+    copy_model_json('..', 'model-single-stimulus_nonhebb.json')
     for idx, n_trial, cue_freq, rew_freq in param_generator()[-1]:
         write_task_json(idx, n_trial, cue_freq, rew_freq)
