@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 
 import dotdot
-import cdana
+from bg import cdana
 
 class DanaTests(unittest.TestCase):
     """Verifying that cdana behaves as expected."""

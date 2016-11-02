@@ -2,9 +2,7 @@ import sys
 import numpy as np
 
 from paths import rootdir
-
-import dotdot
-from experiment import Experiment
+from bg import Experiment
 
 
 def session(exp):

@@ -3,7 +3,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from experiment import Experiment
+from bg import Experiment
 
 def session(exp):
     exp.model.setup()
@@ -77,4 +77,3 @@ from figures import *
 #figure_H_RT(records, [1,0], "Protocol 1", "data/experiment-topalidou-protocol-1-H-RT.pdf")
 figure_P(records, [1,0], "Protocol 1", "data/experiment-topalidou-protocol-1-P.pdf")
 # figure_RT(records, [1,0], "Protocol 1", "data/experiment-topalidou-protocol-1-RT.pdf")
-

@@ -3,7 +3,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from experiment import Experiment
+from bg import Experiment
 
 def session(exp):
     exp.model.setup()
@@ -31,7 +31,7 @@ def session(exp):
     for trial in exp.task:
         exp.model.process(exp.task, trial, model = exp.model)
     records[2] = exp.task.records
-        
+
     return records
 
 
@@ -107,7 +107,7 @@ from figures import *
 
 #figure_P(records, GPi=[0,1,0], save=False, show=True,
 #         title="Protocol 2", filename="data/experiment-topalidou-protocol-2-P.pdf")
-figure_V(records, GPi=[0,1,0], 
+figure_V(records, GPi=[0,1,0],
          title="Protocol 2", filename="data/experiment-topalidou-protocol-2-V.pdf")
 
 # figure_RT(records, [0,1,0], "Protocol 2", "data/experiment-topalidou-protocol-2-RT.pdf")

@@ -1,22 +1,25 @@
+# -----------------------------------------------------------------------------
+# Copyright (c) 2016, Nicolas P. Rougier
+# Distributed under the (new) BSD License.
+# -----------------------------------------------------------------------------
 import numpy as np
 import matplotlib.pyplot as plt
-from experiment import Experiment
+from bg import Experiment
 
 def session(exp):
     exp.model.setup()
     for trial in exp.task:
-        exp.model.process(task=exp.task, trial=trial, model=exp.model)
+        exp.model.process(task=exp.task, trial=trial, model = exp.model)
     return exp.task.records
 
-experiment = Experiment(model  = "model-single-stimulus_nonhebb.json",
-                        task   = "task-single-stimulus.json",
-                        result = "data/experiment-single-stimulus.npy",
-                        report = "data/experiment-single-stimulus.txt",
-                        n_session = 10, n_block = 1, seed = 0)
-records = experiment.run(session, "Single Stimulus")
+experiment = Experiment(model  = "guthrie_model.json",
+                        task   = "guthrie_task.json",
+                        result = "data/guthrie_result.npy",
+                        report = "data/guthrie_report.txt",
+                        trace_file = "data/guthrie.trace",
+                        n_session = 1, n_block = 1, seed = 0)
+records = experiment.run(session, "Protocol 1", force=True)
 records = np.squeeze(records)
-
-
 
 # -----------------------------------------------------------------------------
 P_mean = np.mean(records["best"], axis=0)
@@ -78,5 +81,5 @@ plt.text(n_trial+1, RT_mean[-1], "%d ms" % RT_mean[-1],
 plt.text(0, RT_mean[0], "%d" % RT_mean[0],
          ha="right", va="center", color="r")
 
-plt.savefig("data/experiment-guthrie.pdf")
+plt.savefig("data/{}.pdf".format(name))
 plt.show()

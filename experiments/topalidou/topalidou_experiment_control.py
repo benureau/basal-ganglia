@@ -3,7 +3,7 @@
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
 import numpy as np
-from experiment import Experiment
+from bg import Experiment
 
 
 def session(exp):
@@ -23,10 +23,10 @@ def session(exp):
     return records
 
 
-experiment = Experiment(model  = "model-topalidou.json",
-                        task   = "task-topalidou.json",
-                        result = "data/experiment-topalidou-control.npy",
-                        report = "data/experiment-topalidou-control.txt",
+experiment = Experiment(model  = "topalidou_model_control.json",
+                        task   = "topalidou_task.json",
+                        result = "data/topalidou_control.npy",
+                        report = "data/topalidou_control.txt",
                         n_session = 25, n_block = 2, seed = None)
 records = experiment.run(session, "Control")
 

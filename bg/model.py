@@ -5,7 +5,7 @@
 import os
 import json
 import numpy as np
-from cdana import *
+from .dana import *
 
 class Model(object):
 
@@ -33,7 +33,6 @@ class Model(object):
             noise= _["weight"]["noise"]
             W = np.random.normal((Wmax+Wmin)/2, scale=noise, size=shape)
             return np.clip(W, Wmin, Wmax)
-
 
         self._structures = {
             "CTX" : { "cog" : Group( 4, activation=clamp),
@@ -71,8 +70,6 @@ class Model(object):
 
         W1 = (2 * np.eye(4) - np.ones((4, 4))).ravel()
         W2 = (2 * np.eye(16) - np.ones((16, 16))).ravel()
-
-        print(weights(4))
 
         self._links = {
             "CTX:cog -> STR:cog" :

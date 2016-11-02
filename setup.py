@@ -7,15 +7,15 @@ from Cython.Build import cythonize
 import numpy as np
 
 extensions = [
-    Extension('cdana.cdana', ['cdana/cdana.pyx'], include_dirs = [np.get_include()]),
+    Extension('bg.dana.cdana', ['bg/dana/cdana.pyx'], include_dirs = [np.get_include()]),
 ]
 setup(
-    name="cdana",
-    version="0.1",
+    name="bg",
+    version="0.2",
     maintainer= "Nicolas P. Rougier",
     maintainer_email="Nicolas.Rougier@inria.fr",
     install_requires=['numpy', 'cython', 'tqdm'],
     license = "BSD License",
-    packages=['cdana'],
+    packages=['bg', 'bg.dana'],
     ext_modules = cythonize(extensions)
 )

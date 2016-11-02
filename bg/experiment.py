@@ -13,9 +13,9 @@ import multiprocessing
 import numpy as np
 from tqdm import tqdm
 
-import savetrace
-from task import Task
-from model import Model
+from . import savetrace
+from .task import Task
+from .model import Model
 
 
 class Experiment(object):
@@ -43,6 +43,8 @@ class Experiment(object):
         self.trace = None
         if trace_file is not None:
             tracepath = os.path.abspath(os.path.join(self.rootdir, trace_file))
+            if not os.path.isdir(os.path.dirname(tracepath)):
+                os.makedirs(os.path.dirname(tracepath))
             self.trace = savetrace.Trace(tracepath)
 
         if self.seed is None:
@@ -94,6 +96,11 @@ class Experiment(object):
             session_args = [(self, session, seed, trace)
                             for seed, trace in zip(seeds, traces)]
 
+            # # non-multiprocessing version (for debugging)
+            # for args in session_args:
+            #     result = self.session_init(args)
+            #     records[index] = result
+            #     index += 1
             for result in tqdm(pool.imap(self.session_init, session_args),
                                total=self.n_session, leave=True, desc=desc,
                                unit="session", disable=not self.verbose,

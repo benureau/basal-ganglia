@@ -29,12 +29,13 @@ $ python setup.py develop
 Then you can run a single trial:
 
 ```bash
-$ cd experiments/
-$ python single-trial-guthrie.py
+$ cd experiments/guthrie/
+$ python guthrie_single_trial.py
 ```
 
 Or the full version:
 
 ```bash
-$ python experiment-guthrie.py
+$ cd experiments/guthrie/
+$ python guthrie_experiment.py
 ```

@@ -2,8 +2,8 @@ import unittest
 import numpy as np
 
 import dotdot
-from cdana import pydana
-import cdana
+from bg.cdana import pydana
+from bg import cdana
 
 
 class DanaEquivalence(unittest.TestCase):

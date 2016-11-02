@@ -59,8 +59,8 @@ def copy_model_json(path, filename):
 
 def param_generator():
     n_trials  = [0, 10, 20, 50, 100]
-    cue_freqs = [0.45, 0.50, 0.55, 0.60, 0.75, 0.90, 0.95, 1.0]
-    rew_freqs = [0.0, 0.10, 0.25, 0.45, 0.50, 0.55, 0.60, 0.76, 0.90, 1.0]
+    cue_freqs = np.linspace(0.0, 1.0, 21)
+    rew_freqs = np.linspace(0.0, 1.0, 21)
 
     params = []
     idx = 0

@@ -94,8 +94,6 @@ def graph_aux1(records, key, fig=None, lines=None, handle=None, show=True):
     """Display graph of best choice"""
 
     P_mean = np.mean(records[key], axis=0)
-    print(P_mean.shape)
-    print(P_mean)
     assert len(P_mean.shape) == 1, "P_mean has the wrong shape. Use graph_aux2() instead."
 
     if fig is None:
@@ -146,6 +144,7 @@ def graph_aux2(records, key, fig=None, lines=None, handle=None, show=True):
     ## Cue choice graph
 
 def cue_count(cues):
+    cues = cues[:10]
     """Return to occurences of each cues on the rows of cues"""
     table = {}
     for c in [-1, 0, 1]:

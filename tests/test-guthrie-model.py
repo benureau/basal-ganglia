@@ -5,8 +5,8 @@
 import numpy as np
 import os
 
-import dotdot
-from experiment import Experiment
+#import dotdot
+from bg.experiment import Experiment
 
 
 def session(exp):
@@ -20,10 +20,10 @@ def test_model():
                             task   = "../experiments/task-guthrie.json",
                             result = "data/test-experiment-guthrie.npy",
                             report = "data/test-experiment-guthrie.txt",
-                            n_session = 25, n_block = 1, seed = 1,
+                            n_session = 3, n_block = 1, seed = 1,
                             rootdir=os.path.dirname(__file__),
                             verbose=False)
-    records = experiment.run(session, save=True, force=True, parse=False)
+    records = experiment.run(session, save=False, force=True, parse=False)
     records = np.squeeze(records)
 
     mean = np.mean(records["best"], axis=0)[-1]

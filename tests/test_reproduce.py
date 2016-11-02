@@ -7,7 +7,7 @@ import unittest
 import numpy as np
 
 import dotdot
-from experiment import Experiment
+from bg.experiment import Experiment
 
 
 def session(exp):

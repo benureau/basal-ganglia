@@ -4,14 +4,16 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 import matplotlib.pyplot as plt
-from task import Task
-from model import Model
+
+from bg.task import Task
+from bg.model import Model
+
 
 seed = np.random.randint(0,1000)
 np.random.seed(seed)
 
-model = Model("model-topalidou.json")
-task  = Task("task-guthrie.json")
+model = Model("topalidou/topalidou_model.json")
+task  = Task("guthrie/guthrie_task.json")
 
 print("-"*30)
 print("Seed:     %d" % seed)
