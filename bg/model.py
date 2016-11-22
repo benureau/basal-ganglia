@@ -2,17 +2,13 @@
 # Copyright (c) 2016, Nicolas P. Rougier
 # Distributed under the (new) BSD License.
 # -----------------------------------------------------------------------------
-import os
-import json
 import numpy as np
 from .dana import *
 
 class Model(object):
 
-    def __init__(self, filename="default-model.json"):
-        self.filename = filename
-        with open(filename) as f:
-            self.parameters = json.load(f)
+    def __init__(self, parameters):
+        self.parameters = parameters
         self.trace = None
         self.setup()
 

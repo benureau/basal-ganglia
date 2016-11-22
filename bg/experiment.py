@@ -14,9 +14,9 @@ import numpy as np
 from tqdm import tqdm
 
 from . import savetrace
+from . import utils
 from .task import Task
 from .model import Model
-
 
 class Experiment(object):
     def __init__(self, model, task, result, report, n_session, n_block,
@@ -32,17 +32,17 @@ class Experiment(object):
             from __main__ import __file__ as __mainfile__
             self.rootdir = os.path.dirname(__mainfile__)
 
-        self.model_file  = os.path.abspath(os.path.join(self.rootdir, model))
-        self.task_file   = os.path.abspath(os.path.join(self.rootdir, task))
-        self.result_file = os.path.abspath(os.path.join(self.rootdir, result))
-        self.report_file = os.path.abspath(os.path.join(self.rootdir, report))
+        self.model_file  = utils.filepath(self.rootdir, model)
+        self.task_file   = utils.filepath(self.rootdir, task)
+        self.result_file = utils.filepath(self.rootdir, result)
+        self.report_file = utils.filepath(self.rootdir, report)
         self.n_session   = n_session
         self.n_block     = n_block
         self.seed        = seed
 
         self.trace = None
         if trace_file is not None:
-            tracepath = os.path.abspath(os.path.join(self.rootdir, trace_file))
+            tracepath = utils.filepath(self.rootdir, trace_file)
             if not os.path.isdir(os.path.dirname(tracepath)):
                 os.makedirs(os.path.dirname(tracepath))
             self.trace = savetrace.Trace(tracepath)
@@ -51,8 +51,8 @@ class Experiment(object):
             self.seed = np.random.randint(0, 1000)
         np.random.seed(seed)
 
-        self.model = Model(self.model_file)
-        self.task  = Task(self.task_file)
+        self.model = Model(utils.load_json(self.rootdir, model))
+        self.task  = Task(utils.load_json(self.rootdir, task))
         self.n_trial = len(self.task)
 
     def msg(self, s):

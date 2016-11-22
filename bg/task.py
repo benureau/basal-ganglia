@@ -39,22 +39,18 @@ for trial in task:
     RT = ...
     reward, best = task.process(trial, choice, RT)
 """
-import os
-import json
 import numpy as np
 
 
 class Task(object):
     """ A two-armed bandit task """
 
-    def __init__(self, filename="task-guthrie.json"):
+    def __init__(self, parameters):
         self.index       = None
         self.index_start = None
         self.index_stop  = None
 
-        self.filename = filename
-        with open(filename) as f:
-            self.parameters = json.load(f)
+        self.parameters = parameters
         self.setup()
 
 
