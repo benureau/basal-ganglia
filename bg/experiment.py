@@ -60,14 +60,13 @@ class Experiment(object):
         if self.verbose:
             print(s)
 
-    def run(self, session, desc="", save=True, force=False, parse=True):
+    def run(self, session, desc="", save=True, force=False):
 
         # Command line argument parsing for the --force switch
-        if parse:
-            parser = argparse.ArgumentParser()
-            parser.add_argument("--force", action='store_true')
-            args = parser.parse_args()
-            force = args.force
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--force", action='store_true')
+        args = parser.parse_args()
+        force = force or args.force
 
         if os.path.exists(self.result_file) and not force:
             print("Reading report (%s)" % self.report_file)

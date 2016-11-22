@@ -24,7 +24,7 @@ def run_model():
                             n_session = 8, n_block = 1, seed = 1,
                             rootdir=os.path.dirname(__file__),
                             verbose=False) # for unittest and nosetests.
-    records = experiment.run(session, save=True, force=True, parse=False)
+    records = experiment.run(session, save=True, force=True)
 
 def result_filename(suffix='', ext='npy'):
     return os.path.join(os.path.dirname(__file__),
