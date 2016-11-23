@@ -14,19 +14,19 @@ class Model(object):
 
 
     def setup(self):
-        _ = self.parameters
+        params = self.parameters
 
-        clamp = Clamp(min=_["clamp"]["Vmin"],
-                      max=_["clamp"]["Vmax"])
-        sigmoid = Sigmoid(Vmin = _["sigmoid"]["Vmin"],
-                          Vmax = _["sigmoid"]["Vmax"],
-                          Vh   = _["sigmoid"]["Vh"],
-                          Vc   = _["sigmoid"]["Vc"])
+        clamp = Clamp(min=params["clamp"]["Vmin"],
+                      max=params["clamp"]["Vmax"])
+        sigmoid = Sigmoid(Vmin = params["sigmoid"]["Vmin"],
+                          Vmax = params["sigmoid"]["Vmax"],
+                          Vh   = params["sigmoid"]["Vh"],
+                          Vc   = params["sigmoid"]["Vc"])
 
         def weights(shape):
-            Wmin = _["weight"]["min"]
-            Wmax = _["weight"]["max"]
-            noise= _["weight"]["noise"]
+            Wmin = params["weight"]["min"]
+            Wmax = params["weight"]["max"]
+            noise= params["weight"]["noise"]
             W = np.random.normal((Wmax+Wmin)/2, scale=noise, size=shape)
             return np.clip(W, Wmin, Wmax)
 
@@ -46,9 +46,9 @@ class Model(object):
         }
         for name, structure in self._structures.items():
             for group in structure.values():
-                group.tau  = _[name]["tau"]
-                group.rest = _[name]["rest"]
-                group.noise = _[name]["noise"]
+                group.tau  = params[name]["tau"]
+                group.rest = params[name]["rest"]
+                group.noise = params[name]["noise"]
         self._structures["value"] = np.zeros(4) # FIXME: verify that.
 
         CTX = self["CTX"]
@@ -56,7 +56,7 @@ class Model(object):
         STN = self["STN"]
         GPi = self["GPi"]
         THL = self["THL"]
-        self["value"][...] = _["RL"]["init"]
+        self["value"][...] = params["RL"]["init"]
 
         self._groups = (CTX["cog"], CTX["mot"], CTX["ass"],
                         STR["cog"], STR["mot"], STR["ass"],
@@ -129,12 +129,11 @@ class Model(object):
                 MotToAss(CTX["mot"]["U"], CTX["ass"]["Isyn"], weights(4), 0.0)
         }
         for key, link in self._links.items():
-            if key in _["gain"].keys():
-                link.gain = _["gain"][key]
+            if key in params["gain"].keys():
+                link.gain = params["gain"][key]
 
         if self.trace is not None:
             self.trace.initialize_model(self)
-
 
 
     def __getitem__(self, key):
@@ -173,22 +172,22 @@ class Model(object):
         if self.trace is not None:
             self.trace.new_trial(trial)
 
-        _ = self.parameters
+        params = self.parameters
 
         # Flush all activities
         self.flush()
 
-        dt = _["time"]["dt"]
-        settling = _["time"]["settling"]
-        duration = _["time"]["duration"]
+        dt = params["time"]["dt"]
+        settling = params["time"]["settling"]
+        duration = params["time"]["duration"]
 
         # Settling phase (500ms)
         for i in range(int(settling/dt)):
             self.iterate(dt)
 
         # Trial setup
-        V     = _["input"]["potential"]
-        noise = _["input"]["noise"]
+        V     = params["input"]["potential"]
+        noise = params["input"]["noise"]
         self["CTX"]["cog"]["Iext"] = V * trial["cog"] * np.random.normal(1, noise, 4)
         self["CTX"]["mot"]["Iext"] = V * trial["mot"] * np.random.normal(1, noise, 4)
         self["CTX"]["ass"]["Iext"] = V * trial["ass"].ravel() * np.random.normal(1, noise, 16)
@@ -201,7 +200,7 @@ class Model(object):
             self.iterate(dt)
 
             # Test if a motor decision has been made
-            if stop and self["CTX"]["mot"].delta > _["threshold"]:
+            if stop and self["CTX"]["mot"].delta > params["threshold"]:
                 decision = True
                 break
 
@@ -218,16 +217,16 @@ class Model(object):
             # print("  Motor decision: %d, Chosen cue: %d, Actual cue: %d" % (choice,cue, actual_cue))
 
             # Constants
-            Wmin = _["weight"]["min"]
-            Wmax = _["weight"]["max"]
+            Wmin = params["weight"]["min"]
+            Wmax = params["weight"]["max"]
 
             # Reinforcement learning
-            alpha_critic = _["RL"]["alpha"]
+            alpha_critic = params["RL"]["alpha"]
             error = reward - self["value"][cue]
             self["value"][cue] += alpha_critic * error
 
-            LTP   = _["RL"]["LTP"] # long-term potentiation
-            LTD   = _["RL"]["LTD"] # long-term depression
+            LTP   = params["RL"]["LTP"] # long-term potentiation
+            LTD   = params["RL"]["LTD"] # long-term depression
             alpha_actor = LTP if error > 0 else LTD
             dw = alpha_actor * error * self["STR"]["cog"]["U"][cue]
             W = self["CTX:cog -> STR:cog"].weights
@@ -238,7 +237,7 @@ class Model(object):
             # This is the chosen cue by the model (may be different from the actual cue)
             cue = np.argmax(self["CTX"]["cog"]["U"])
 
-            LTP   = _["Hebbian"]["LTP"]
+            LTP   = params["Hebbian"]["LTP"]
             dw = LTP * self["CTX"]["cog"]["U"][cue] * sum(self["CTX"]["ass"]["U"].reshape(4,4)[cue])
             W = self["CTX:cog -> CTX:ass"].weights
             W[cue] += dw * (Wmax - W[cue]) * (W[cue] - Wmin)
