@@ -1,0 +1,6 @@
+{
+  "name": "os",
+  "label": "Single Stimulus",
+  "model_base": "../os_model.json",
+  "task_base": "../os_task.json"
+}

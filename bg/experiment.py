@@ -73,7 +73,7 @@ class Experiment(object):
         # Command line argument parsing for the --force switch
         parser = argparse.ArgumentParser()
         parser.add_argument("--force", action='store_true')
-        args = parser.parse_args()
+        args = parser.parse_known_args()[0]
         force = force or args.force
 
         if os.path.exists(self.result_file) and not force:

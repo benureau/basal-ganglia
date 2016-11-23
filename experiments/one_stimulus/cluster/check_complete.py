@@ -1,23 +1,24 @@
 import os
 import argparse
 
+import config
 from paths import rootdir
 from prepare import param_generator
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--verbose", action='store_true')
-args = parser.parse_args()
+args = parser.parse_known_args()[0]
 
 
 # check missing files
 missing = set()
 for idx, n_trial, cue_freq, rew_freq in param_generator()[-1]:
-    for filepath in [os.path.join(rootdir, 'data/data_sgstim.{}.npy'.format(idx)),
-                     os.path.join(rootdir, 'data/data_sgstim.{}.txt'.format(idx)),
-                     os.path.join(rootdir, 'data/task_sgstim.{}'.format(idx)),
-                     #os.path.join(rootdir, 'data/data_sgstim.out-{}'.format(idx)),
-                     #os.path.join(rootdir, 'data/data_sgstim.err-{}'.format(idx))
+    for filepath in [os.path.join(rootdir, 'data/data_{}.{}.npy'.format(config.name, idx)),
+                     os.path.join(rootdir, 'data/data_{}.{}.txt'.format(config.name, idx)),
+                     os.path.join(rootdir, 'data/task_{}.{}'.format(config.name, idx)),
+                     #os.path.join(rootdir, 'data/data_{}.out-{}'.format(config.name, idx)),
+                     #os.path.join(rootdir, 'data/data_{}.err-{}'.format(config.name, idx))
                     ]:
         if not os.path.exists(filepath):
             print('error: `{}` not found'.format(filepath))
@@ -44,7 +45,7 @@ if len(missing) > 0:
 
 if args.verbose:
     for idx, n_trial, cue_freq, rew_freq in param_generator()[-1]:
-        filepath = os.path.join(rootdir, 'data/data_sgstim.err-{}'.format(idx))
+        filepath = os.path.join(rootdir, 'data/data_{}.err-{}'.format(config.name, idx))
         if os.path.exists(filepath):
             stats = os.stat(filepath)
             if stats.st_size > 0:
