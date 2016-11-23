@@ -1,5 +1,5 @@
-import provenance
-provenance.init(strict=False)
+#import provenance
+#provenance.init(strict=False) # TinyDB not compatible with multiple access!!!
 
 import sys
 import numpy as np
@@ -22,9 +22,9 @@ def run(task_id):
                             result = 'data/data_{}.{:05d}.npy'.format(config.name, task_id),
                             report = 'data/data_{}.{:05d}.txt'.format(config.name, task_id),
                             n_session=config.params["n_sessions"], n_block=1, seed=0,
-                            changes= 'changes_{}.{:05d}.json'.format(config.name, task_id),
+                            changes= 'data/changes_{}.{:05d}.json'.format(config.name, task_id),
                             verbose=True, rootdir=rootdir)
-    experiment.run(session, config.label, save=True, force=False)
+    experiment.run(session, config.label, save=True, force=True)
 
 
 if __name__ == '__main__':

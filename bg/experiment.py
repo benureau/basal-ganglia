@@ -21,7 +21,7 @@ from .model import Model
 class Experiment(object):
     def __init__(self, model, task, result, report, n_session, n_block, changes=None,
                        seed=None, rootdir=None, verbose=True, trace_file=None):
-        """Initialize an exeperiment.
+        """Initialize an experiment.
 
         rootdir: root directory for the `model`, `task`, `result` and `report`
                  filepath. If None, defaults to the directory of the main script.
@@ -54,10 +54,12 @@ class Experiment(object):
         # Instanciating model and task
         model_params = utils.load_json(self.rootdir, model)
         task_params = utils.load_json(self.rootdir, task)
+        changes = utils.load_json(self.rootdir, changes)
         if changes is not None and 'model' in changes:
             model_params = utils.update_json(model_params, changes['model'])
         if changes is not None and 'task' in changes:
-            model_params = utils.update_json(model_params, changes['task'])
+            task_params = utils.update_json(task_params, changes['task'])
+
         self.model = Model(model_params)
         self.task  = Task(task_params)
 
