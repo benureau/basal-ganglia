@@ -2,6 +2,7 @@ import os
 import json
 import string
 import shutil
+import itertools
 
 import numpy as np
 
@@ -31,22 +32,14 @@ TASK_JSON = """
 """
 
 
-def write_task_json(idx, n_trial, cue_freq_a, rew_freq_a,
-                    cue_freq_b=None, rew_freq_b=None):
+def write_changes(idx, changes):
     """Write the json file with the given parameters."""
-    if cue_freq_b is None:
-        cue_freq_b = 1.0 - cue_freq_a
-    if rew_freq_b is None:
-        rew_freq_b = 1.0 - rew_freq_a
-    content = TASK_JSON.format(n_trial=n_trial, cue_freq_a=cue_freq_a,
-        rew_freq_a=rew_freq_a, cue_freq_b=cue_freq_b, rew_freq_b=rew_freq_b)
-
-    filename = 'task_{}.{}'.format(config.name, idx)
+    filename = 'changes_{}.{:05d}.json'.format(config.name, idx)
     path = os.path.join(rootdir, 'data')
     if not os.path.exists(path):
         os.makedirs(path)
-    with open(os.path.join(path, filename), 'w') as f:
-        f.write(content)
+    with open(os.path.join(path, filename), 'w') as fp:
+        json.dump(changes, fp, indent=4, ensure_ascii=False)
 
 def copy_json(path):
     """Copy the base model and task json file"""
@@ -64,22 +57,35 @@ def copy_json(path):
         os.makedirs(os.path.dirname(task_path_to))
     shutil.copyfile(task_path_from, task_path_to)
 
-def param_generator():
-    n_trials  = [0, 10, 20, 50, 100]
-    cue_freqs = np.linspace(0.0, 1.0, 21)
-    rew_freqs = np.linspace(0.0, 1.0, 21)
+def param_generator(param_ranges):
+    """Generate all the parameter ranges.
 
-    params = []
-    idx = 0
-    for n_trial in n_trials:
-        for cue_freq in cue_freqs:
-            for rew_freq in rew_freqs:
-                params.append((idx, n_trial, cue_freq, rew_freq))
-                idx += 1
-    return n_trials, cue_freqs, rew_freqs, params
+    :param params_ranges: a dict of values that the parameters can take,
+                          e.g. {'rl': [0.01, 0.02, 0.03], 'hebbian': [True, False]}
+    """
+    sorted_keys = sorted(param_ranges.keys())
+    combinations = itertools.product(*[param_ranges[k] for k in sorted_keys])
+    param_comb = []
+    for values in combinations:
+        param_comb.append({k: v for k, v in zip(sorted_keys, values)})
+    return param_comb
+
+def compute_changes(params):
+    changes = {'task': {'single': {}, 'choice': {}}}
+    changes['task']['single']['n_trials'] = params['n_trials']
+
+    cue_freq_a = params['cue_freq_a']
+    changes['task']['single']['cue'] = [cue_freq_a, 1.0 - cue_freq_a, 0, 0]
+
+    rwd_freq_a = params['rwd_freq_a']
+    for name in ['single', 'choice']:
+        changes['task'][name]['rwd'] = [rwd_freq_a, 1.0 - rwd_freq_a, 0.0, 0.0]
+
+    return changes
 
 
 if __name__ == "__main__":
     copy_json('.')
-    for idx, n_trial, cue_freq, rew_freq in param_generator()[-1]:
-        write_task_json(idx, n_trial, cue_freq, rew_freq)
+    for idx, params in enumerate(param_generator(config.params['params'])):
+        changes = compute_changes(params)
+        write_changes(idx, changes)

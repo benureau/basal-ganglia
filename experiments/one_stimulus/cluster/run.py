@@ -16,14 +16,16 @@ def session(exp):
     return exp.task.records
 
 def run(task_id):
+    """:param task_id: int"""
     experiment = Experiment(model  = 'model_{}.json'.format(config.name),
-                            task   = 'data/task_{}.{}'.format(config.name, task_id),
-                            result = 'data/data_{}.{}.npy'.format(config.name, task_id),
-                            report = 'data/data_{}.{}.txt'.format(config.name, task_id),
-                            n_session=100, n_block=1, seed=0,
+                            task   = 'task_{}.json'.format(config.name),
+                            result = 'data/data_{}.{:05d}.npy'.format(config.name, task_id),
+                            report = 'data/data_{}.{:05d}.txt'.format(config.name, task_id),
+                            n_session=config.params["n_sessions"], n_block=1, seed=0,
+                            changes= 'changes_{}.{:05d}.json'.format(config.name, task_id),
                             verbose=True, rootdir=rootdir)
     experiment.run(session, config.label, save=True, force=False)
 
 
 if __name__ == '__main__':
-    run(sys.argv[2])
+    run(int(sys.argv[2]))
