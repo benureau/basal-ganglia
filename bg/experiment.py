@@ -18,6 +18,7 @@ from . import utils
 from .task import Task
 from .model import Model
 
+
 class Experiment(object):
     def __init__(self, model, task, result, report, n_session, n_block, changes=None,
                        seed=None, rootdir=None, verbose=True, trace_file=None):
