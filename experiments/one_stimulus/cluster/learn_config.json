@@ -1,0 +1,12 @@
+{
+  "name": "learn",
+  "label": "Learning Rates",
+
+  "model_base": "../os_model.json",
+  "task_base": "../learn_task.json",
+  "params": {"rl_init"     : [0.0, 0.15, 0.30, 0.50, 0.65],
+             "rl_ltp"      : [0.1, 0.025, 0.010, 0.005, 0.001],
+             "hebb_ratio"  : [25, 50, 100, 200, 400, 800]},
+
+  "n_sessions": 10
+}
