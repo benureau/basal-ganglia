@@ -19,7 +19,7 @@ from .task import Task
 from .model import Model
 
 class Experiment(object):
-    def __init__(self, model, task, result, report, n_session, n_block,
+    def __init__(self, model, task, result, report, n_session, n_block, changes=None,
                        seed=None, rootdir=None, verbose=True, trace_file=None):
         """Initialize an exeperiment.
 
@@ -51,8 +51,16 @@ class Experiment(object):
             self.seed = np.random.randint(0, 1000)
         np.random.seed(seed)
 
-        self.model = Model(utils.load_json(self.rootdir, model))
-        self.task  = Task(utils.load_json(self.rootdir, task))
+        # Instanciating model and task
+        model_params = utils.load_json(self.rootdir, model)
+        task_params = utils.load_json(self.rootdir, task)
+        if changes is not None and 'model' in changes:
+            model_params = utils.update_json(model_params, changes['model'])
+        if changes is not None and 'task' in changes:
+            model_params = utils.update_json(model_params, changes['task'])
+        self.model = Model(model_params)
+        self.task  = Task(task_params)
+
         self.n_trial = len(self.task)
 
     def msg(self, s):

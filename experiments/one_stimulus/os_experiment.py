@@ -8,11 +8,16 @@ def session(exp):
         exp.model.process(task=exp.task, trial=trial, model=exp.model)
     return exp.task.records
 
-experiment = Experiment(model  = "os_model.json",
-                        task   = "os_task.json",
-                        result = "data/os_results.npy",
-                        report = "data/os_report.txt",
-                        n_session = 10, n_block = 1, seed = 0)
+changes = None
+#changes = {'model': {'RL': {'LTP': 0.010}}}
+
+experiment = Experiment(model   = "os_model.json",
+                        task    = "os_task.json",
+                        result  = "data/os_results.npy",
+                        report  = "data/os_report.txt",
+                        n_session = 10, n_block = 1,
+                        changes = changes,
+                        seed = 0)
 records = experiment.run(session, "Single Stimulus")
 records = np.squeeze(records)
 
