@@ -14,6 +14,8 @@ def compute_changes(params):
 
     return changes
 
+session = prepare.session # default
+
 
 if __name__ == '__main__':
     prepare.copy_json('.')
