@@ -144,7 +144,7 @@ def graph_aux2(records, key, fig=None, lines=None, handle=None, show=True):
     ## Cue choice graph
 
 def cue_count(cues):
-    cues = cues[:10]
+    cues = cues
     """Return to occurences of each cues on the rows of cues"""
     table = {}
     for c in [-1, 0, 1]:

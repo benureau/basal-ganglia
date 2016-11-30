@@ -11,12 +11,12 @@
 
 cd $PBS_O_WORKDIR
 
-#PBS -o ~/logs/logout.$PBS_ARRAYID
-#PBS -e ~/logs/logerr.$PBS_ARRAYID
+# #PBS -o ~/logs/logout.$PBS_ARRAYID # does not work
+# #PBS -e ~/logs/logerr.$PBS_ARRAYID # does not work
 
 # replace "monkeys" by your pyenv's virtual environment name.
 # if you do not have pyenv, python version will be unchanged.
 
 export PYENV_VERSION=monkeys
-python run.py $1 ${PBS_ARRAYID}
+python run.py $1 ${PBS_ARRAYID} > ~/logs/out${PBS_ARRAYID}.txt 2> ~/logs/err${PBS_ARRAYID}.txt
 unset PYENV_VERSION
