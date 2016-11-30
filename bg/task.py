@@ -45,6 +45,23 @@ import numpy as np
 class Task(object):
     """ A two-armed bandit task """
 
+    record_dtype = np.dtype([("choice", float, 1),
+                             ("cue",    float, 1),
+                             ("best",   float, 1),
+                             ("valid",  float, 1),
+                             ("RT",     float, 1),
+                             ("reward", float, 1),
+                             # These values must be collected from the model
+                             ("value",  float, 4),
+                             ("CTX:cog -> CTX:ass", float, 4),
+                             ("CTX:cog -> STR:cog", float, 4)])
+
+    trial_dtype = np.dtype([("mot", float,  4),
+                            ("cog", float,  4),
+                            ("ass", float, (4,4)),
+                            ("rwd", float,  4),
+                            ("rnd", float,  1)])
+
     def __init__(self, parameters):
         self.index       = None
         self.index_start = None
@@ -54,19 +71,18 @@ class Task(object):
         self.setup()
 
 
-    def block(self,index):
+    def block(self, index):
         self.index_start = self.blocks[index][0]-1
         self.index_stop  = self.blocks[index][1]
         self.index = self.index_start
         return self
 
+
     def setup(self):
 
-        _ = self.parameters
-
         blocks = []
-        for name in _["session"]:
-            blocks.append(_[name])
+        for name in self.parameters["session"]:
+            blocks.append(self.parameters[name])
 
         # Get total number of trials
         n = 0
@@ -79,31 +95,18 @@ class Task(object):
             n += block["n_trial"]
 
         # Build corresponding arrays
-        self.trials = np.zeros(n, [("mot", float, 4),
-                                   ("cog", float, 4),
-                                   ("ass", float, (4,4)),
-                                   ("rwd", float, 4),
-                                   ("rnd", float, 1) ] )
-        self.records  = np.zeros(n, [("choice",  float, 1),
-                                     ("cue",     float, 1),
-                                     ("best",    float, 1),
-                                     ("valid",   float, 1),
-                                     ("RT",      float, 1),
-                                     ("reward",  float, 1),
-                                     # These values must be collected from the model
-                                     ("value", float, 4),
-                                     ("CTX:cog -> CTX:ass", float, 4),
-                                     ("CTX:cog -> STR:cog", float, 4)] )
+        self.trials  = np.zeros(n, dtype=self.trial_dtype)
+        self.records = np.zeros(n, dtype=self.record_dtype)
 
         # We draw all random probabilities at once (faster)
-        self.trials["rnd"] = np.random.uniform(0,1,n)
+        self.trials["rnd"] = np.random.uniform(0, 1, n)
 
         # Build actual trials
         index = 0
         for block in blocks:
             indices = range(len(block["cue"]))
             n_cues = block.get("n_cue", 2) # defaults to 2 cues
-            cue = np.array(block["cue"],float)
+            cue = np.array(block["cue"], float)
             P_cue = cue / np.sum(cue)
             pos = block["pos"]
             P_pos = pos / np.sum(pos)
@@ -116,7 +119,7 @@ class Task(object):
                 trial["cog"][cues_idx] = 1
                 trial["mot"][pos_idx]  = 1
                 for c, p in zip(cues_idx, pos_idx):
-                    trial["ass"][c,p] = 1
+                    trial["ass"][c, p] = 1
                 trial["rwd"][...] = block["rwd"]
                 index += 1
 

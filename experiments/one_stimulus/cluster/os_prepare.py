@@ -1,3 +1,4 @@
+import bg
 import prepare
 
 
@@ -14,7 +15,7 @@ def compute_changes(params):
 
     return changes
 
-session = prepare.session # default
+session = bg.session # default
 
 
 if __name__ == '__main__':

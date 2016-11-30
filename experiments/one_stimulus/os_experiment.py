@@ -1,24 +1,19 @@
 import numpy as np
 #import matplotlib.pyplot as plt
-from bg import Experiment
+import bg
 
-def session(exp):
-    exp.model.setup()
-    for trial in exp.task:
-        exp.model.process(task=exp.task, trial=trial, model=exp.model)
-    return exp.task.records
 
 changes = None
 #changes = {'model': {'RL': {'LTP': 0.010}}}
 
-experiment = Experiment(model   = "os_model.json",
-                        task    = "os_task.json",
-                        result  = "data/os_results.npy",
-                        report  = "data/os_report.txt",
-                        n_session = 10, n_block = 1,
-                        changes = changes,
-                        seed = 0)
-records = experiment.run(session, "Single Stimulus")
+experiment = bg.Experiment(model   = "os_model.json",
+                           task    = "os_task.json",
+                           result  = "data/os_results.npy",
+                           report  = "data/os_report.txt",
+                           n_session = 10, n_block = 1,
+                           changes = changes,
+                           seed = 0)
+records = experiment.run(bg.session, "Single Stimulus")
 records = np.squeeze(records)
 
 

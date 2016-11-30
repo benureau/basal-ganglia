@@ -7,28 +7,24 @@ import unittest
 import numpy as np
 
 import dotdot
-from bg.experiment import Experiment
+import bg
 
 
-def session(exp):
-    exp.model.setup()
-    for trial in exp.task:
-        exp.model.process(exp.task, trial)
-    return exp.task.records
+filename = 'data/guthrie_result'
 
 def run_model():
-    experiment = Experiment(model  = "../experiments/model-guthrie.json",
-                            task   = "../experiments/task-guthrie.json",
-                            result = "data/test-experiment-guthrie.npy",
-                            report = "data/test-experiment-guthrie.txt",
-                            n_session = 8, n_block = 1, seed = 1,
-                            rootdir=os.path.dirname(__file__),
-                            verbose=False) # for unittest and nosetests.
-    records = experiment.run(session, save=True, force=True)
+    experiment = bg.Experiment(model  = "../experiments/guthrie/guthrie_model.json",
+                               task   = "../experiments/guthrie/guthrie_task.json",
+                               result = "{}.npy".format(filename),
+                               report = "{}.txt".format(filename),
+                               n_session = 8, n_block = 1, seed = 1,
+                               rootdir=os.path.dirname(__file__),
+                               verbose=False) # for unittest and nosetests.
+    records = experiment.run(bg.session, save=True, force=True)
 
 def result_filename(suffix='', ext='npy'):
     return os.path.join(os.path.dirname(__file__),
-                        'data/test-experiment-guthrie{}.{}'.format(suffix, ext))
+                        '{}{}.{}'.format(filename, suffix, ext))
 
 
 class DanaTests(unittest.TestCase):

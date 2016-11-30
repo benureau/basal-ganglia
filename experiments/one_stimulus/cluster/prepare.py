@@ -32,17 +32,6 @@ from paths import rootdir
 # """
 
 
-def session(exp):
-    """Default session function
-
-    Run the task, by iterating over all trials.
-    """
-    exp.model.setup()
-    for trial in exp.task:
-        exp.model.process(task=exp.task, trial=trial, model=exp.model)
-    return exp.task.records
-
-
 def write_changes(idx, changes):
     """Write the json file with the given parameters."""
     filename = 'changes_{}.{:05d}.json'.format(config.name, idx)

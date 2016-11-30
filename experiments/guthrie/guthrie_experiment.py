@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 import matplotlib.pyplot as plt
-from bg import Experiment
+import bg
 
 def session(exp):
     exp.model.setup()
@@ -12,13 +12,13 @@ def session(exp):
         exp.model.process(task=exp.task, trial=trial, model = exp.model)
     return exp.task.records
 
-experiment = Experiment(model  = "guthrie_model.json",
-                        task   = "guthrie_task.json",
-                        result = "data/guthrie_result.npy",
-                        report = "data/guthrie_report.txt",
-                        trace_file = "data/guthrie.trace",
-                        n_session = 1, n_block = 1, seed = 0)
-records = experiment.run(session, "Protocol 1", force=True)
+experiment = bg.Experiment(model  = "guthrie_model.json",
+                           task   = "guthrie_task.json",
+                           result = "data/guthrie_result.npy",
+                           report = "data/guthrie_report.txt",
+                           trace_file = "data/guthrie.trace",
+                           n_session = 1, n_block = 1, seed = 0)
+records = experiment.run(bg.session, "Protocol 1", force=True)
 records = np.squeeze(records)
 
 # -----------------------------------------------------------------------------
