@@ -31,7 +31,7 @@ class DanaTests(unittest.TestCase):
 
     def test_reproducible(self):
         # removing existing results
-        for ext in ['pickle', 'txt']:
+        for ext in ['pickle', 'json']:
             for suffix in ['', '_ref']:
                 if os.path.exists(result_filename(suffix=suffix, ext=ext)):
                     os.remove(result_filename(suffix=suffix, ext=ext))
@@ -39,13 +39,13 @@ class DanaTests(unittest.TestCase):
         # first run of the model
         run_model()
         # moving the files out of the way
-        for ext in ['pickle', 'txt']:
+        for ext in ['pickle', 'json']:
             os.rename(result_filename(ext=ext), result_filename(suffix='_ref', ext=ext))
         # second run of the model: should be identical
         run_model()
 
         # comparing results
-        for ext in ['pickle', 'txt']:
+        for ext in ['pickle', 'json']:
             with open(result_filename(ext=ext), 'rb') as f:
                 run0 = f.read()
             with open(result_filename(suffix='_ref', ext=ext), 'rb') as f:
