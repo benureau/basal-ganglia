@@ -168,7 +168,7 @@ class Model(object):
                 self.trace.group_update(group)
 
 
-    def process(self, task, trial, stop=True, debug=False, model=None):
+    def process(self, task, trial, stop=True, debug=False, record_model=True):
         if self.trace is not None:
             self.trace.new_trial(trial)
 
@@ -209,11 +209,11 @@ class Model(object):
 
         if decision is False:
             # print("  No decision")
-            reward, cue, best = task.process(trial, -1, RT, debug=debug, model=model)
+            reward, cue, best = task.process(trial, -1, RT, debug=debug, model=self if record_model else None)
         else:
             choice = np.argmax(self["CTX"]["mot"]["U"])
             # actual_cue = np.argmax(self["CTX"]["cog"]["U"])
-            reward, cue, best = task.process(trial, choice, RT, debug=debug, model=model)
+            reward, cue, best = task.process(trial, choice, RT, debug=debug, model=self if record_model else None)
             # print("  Motor decision: %d, Chosen cue: %d, Actual cue: %d" % (choice,cue, actual_cue))
 
             # Constants

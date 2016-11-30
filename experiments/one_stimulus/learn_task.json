@@ -1,5 +1,5 @@
 {
-    "session" : ["choice"],
+    "session" : ["choice", "choice"],
     "choice" : {
         "n_trial" : 60,
         "n_cue"   : 2,

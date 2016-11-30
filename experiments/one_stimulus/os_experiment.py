@@ -8,9 +8,9 @@ changes = None
 
 experiment = bg.Experiment(model   = "os_model.json",
                            task    = "os_task.json",
-                           result  = "data/os_results.npy",
+                           result  = "data/os_results.pickle",
                            report  = "data/os_report.txt",
-                           n_session = 10, n_block = 1,
+                           n_session = 10,
                            changes = changes,
                            seed = 0)
 records = experiment.run(bg.session, "Single Stimulus")

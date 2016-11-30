@@ -12,9 +12,9 @@ import bg
 def test_model():
     experiment = bg.Experiment(model  = "../experiments/guthrie/guthrie_model.json",
                                task   = "../experiments/guthrie/guthrie_task.json",
-                               result = "data/guthrie_result.npy",
-                               report = "data/guthrie_report.txt",
-                               n_session = 25, n_block = 1, seed = 1,
+                               result = "data/guthrie_result.pickle",
+                               report = "data/guthrie_report.json",
+                               n_session = 25, seed = 1,
                                rootdir=os.path.dirname(__file__),
                                verbose=False)
     records = experiment.run(bg.session, save=False, force=True)

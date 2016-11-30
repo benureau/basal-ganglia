@@ -1,5 +1,5 @@
 {
-    "session" : ["block 1"],
+    "session" : ["block 1", "block 1"],
     "block 1" : {
         "n_trial" : 120,
         "cue"     : [ 1, 1, 0, 0 ],

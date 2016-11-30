@@ -8,26 +8,26 @@ from bg import Experiment
 
 def session(exp):
     exp.model.setup()
-    records = np.zeros((exp.n_block, exp.n_trial), dtype=exp.task.records.dtype)
+    records = []
 
     # Day 1 : GPi ON
-    for trial in exp.task:
+    for trial in exp.task.block('block 1'):
         exp.model.process(exp.task, trial)
-    records[0] = exp.task.records
+    records.append(exp.task.records)
 
     # Day 2: GPi ON
-    for trial in exp.task:
+    for trial in exp.task.block('block 1'):
         exp.model.process(exp.task, trial)
-    records[1] = exp.task.records
+    records.append(exp.task.records)
 
     return records
 
 
 experiment = Experiment(model  = "topalidou_model_control.json",
                         task   = "topalidou_task.json",
-                        result = "data/topalidou_control.npy",
+                        result = "data/topalidou_control.pickle",
                         report = "data/topalidou_control.txt",
-                        n_session = 25, n_block = 2, seed = None)
+                        n_session = 25, seed = None)
 records = experiment.run(session, "Control")
 
 

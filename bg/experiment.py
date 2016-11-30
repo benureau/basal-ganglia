@@ -9,6 +9,7 @@ import time
 import os
 import argparse
 import multiprocessing
+import pickle
 
 import numpy as np
 from tqdm import tqdm
@@ -25,13 +26,18 @@ def session(exp):
     Run the task, by iterating over all trials.
     """
     exp.model.setup()
-    for trial in exp.task:
-        exp.model.process(task=exp.task, trial=trial, model=exp.model)
-    return exp.task.records
+    records = []
+
+    for blockname in exp.task.session:
+        for trial in exp.task.block(blockname):
+            exp.model.process(task=exp.task, trial=trial)
+        records.append(exp.task.records)
+
+    return records
 
 
 class Experiment(object):
-    def __init__(self, model, task, result, report, n_session, n_block, changes=None,
+    def __init__(self, model, task, result, report, n_session, changes=None,
                        seed=None, rootdir=None, verbose=True, trace_file=None):
         """Initialize an experiment.
 
@@ -49,7 +55,6 @@ class Experiment(object):
         self.result_file = utils.filepath(self.rootdir, result)
         self.report_file = utils.filepath(self.rootdir, report)
         self.n_session   = n_session
-        self.n_block     = n_block
         self.seed        = seed
 
         self.trace = None
@@ -76,7 +81,7 @@ class Experiment(object):
         self.model = Model(model_params)
         self.task  = Task(task_params)
 
-        self.n_trial = len(self.task)
+        self.n_trial = self.task.length()
 
     def msg(self, s):
         """Print if verbose is True"""
@@ -101,14 +106,12 @@ class Experiment(object):
         self.msg("Task:     {}".format(self.task_file))
         self.msg("Result:   {}".format(self.result_file))
         self.msg("Report:   {}".format(self.report_file))
-        n = self.n_session * self.n_block * self.n_trial
+        n = self.n_session * self.n_trial
         self.msg("Sessions: {} ({} trials)".format(self.n_session, n))
         self.msg("-"*30)
 
         if not os.path.exists(self.result_file) or force:
-            index = 0
-            records = np.zeros((self.n_session, self.n_block, self.n_trial),
-                               dtype=self.task.records.dtype)
+            records = []
 
             n_workers = multiprocessing.cpu_count() # depends on your hardware
             pool = multiprocessing.Pool(n_workers)
@@ -127,15 +130,16 @@ class Experiment(object):
                                total=self.n_session, leave=True, desc=desc,
                                unit="session", disable=not self.verbose,
                                file=sys.stdout):
-                records[index] = result
-                index += 1
+                records.append(result)
             pool.close()
 
             if save:
                 self.msg("Saving results ({})".format(self.result_file))
                 if not os.path.isdir(os.path.dirname(self.result_file)):
                     os.makedirs(os.path.dirname(self.result_file))
-                np.save(self.result_file, records)
+                with open(self.result_file, 'wb') as fp:
+                    pickle.dump(records, fp)
+                # np.save(self.result_file, records)
                 if not os.path.isdir(os.path.dirname(self.report_file)):
                     os.makedirs(os.path.dirname(self.report_file))
                 self.msg("Writing report ({})".format(self.report_file))
@@ -144,7 +148,8 @@ class Experiment(object):
         else:
             self.msg("Loading previous results")
             self.msg(' -> "{}"'.format(self.result_file))
-            records = np.load(self.result_file)
+            with open(self.result_file, 'rb') as fp:
+                records = pickle.load(fp)
             self.msg("-"*30)
 
         return records
@@ -162,7 +167,6 @@ class Experiment(object):
     def write_report(self):
         report = { "seed"      : self.seed,
                    "n_session" : self.n_session,
-                   "n_block"   : self.n_block,
                    "n_trial"   : self.n_trial,
                    "task"      : self.task.parameters,
                    "model"     : self.model.parameters }
@@ -174,5 +178,4 @@ class Experiment(object):
             report = json.load(fp)
         self.seed      = report["seed"]
         self.n_session = report["n_session"]
-        self.n_block   = report["n_block"]
         self.n_trial   = report["n_trial"]

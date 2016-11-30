@@ -21,7 +21,7 @@ def time_guthrie():
                             task   = "../../experiments/task-guthrie.json",
                             result = "data/bench_guthrie.npy",
                             report = "data/bench_guthrie.txt",
-                            n_session = 8, n_block = 1, seed = 1,
+                            n_session = 8, seed = 1,
                             rootdir=os.path.dirname(__file__), verbose=False)
     records = experiment.run(session, save=False, force=True)
     records = np.squeeze(records)

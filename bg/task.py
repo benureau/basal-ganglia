@@ -63,90 +63,49 @@ class Task(object):
                             ("rnd", float,  1)])
 
     def __init__(self, parameters):
-        self.index       = None
-        self.index_start = None
-        self.index_stop  = None
-
         self.parameters = parameters
-        self.setup()
+        self.session    = self.parameters["session"]
 
+    def length(self):
+        """Return the total number of trials summed across all blocks"""
+        return sum(self.parameters[blockname]['n_trial']
+                   for blockname in self.session)
 
-    def block(self, index):
-        self.index_start = self.blocks[index][0]-1
-        self.index_stop  = self.blocks[index][1]
-        self.index = self.index_start
-        return self
-
-
-    def setup(self):
-
-        blocks = []
-        for name in self.parameters["session"]:
-            blocks.append(self.parameters[name])
-
-        # Get total number of trials
-        n = 0
-        self.blocks = []
-        start,stop = 0, 0
-        for block in blocks:
-            start = stop
-            stop += block["n_trial"]
-            self.blocks.append((start,stop))
-            n += block["n_trial"]
+    def block(self, blockname):
+        """Create the datastructure and trials for a given block"""
+        block = self.parameters[blockname]
 
         # Build corresponding arrays
-        self.trials  = np.zeros(n, dtype=self.trial_dtype)
-        self.records = np.zeros(n, dtype=self.record_dtype)
+        self.cursor  = 0 # current trial # FIXME: brittle, non-dry coding
+        self.trials  = np.zeros(block['n_trial'], dtype=self.trial_dtype)
+        self.records = np.zeros(block['n_trial'], dtype=self.record_dtype)
 
-        # We draw all random probabilities at once (faster)
-        self.trials["rnd"] = np.random.uniform(0, 1, n)
+        # We draw all reward random probabilities at once (faster)
+        self.trials['rnd'] = np.random.uniform(0, 1, block['n_trial'])
 
-        # Build actual trials
-        index = 0
-        for block in blocks:
-            indices = range(len(block["cue"]))
-            n_cues = block.get("n_cue", 2) # defaults to 2 cues
-            cue = np.array(block["cue"], float)
-            P_cue = cue / np.sum(cue)
-            pos = block["pos"]
-            P_pos = pos / np.sum(pos)
+        n_cues = block.get("n_cue", 2) # defaults to 2 cues
+        cue_options = range(len(block["cue"]))
+        pos_options = range(len(block["pos"]))
 
-            for i in range(block["n_trial"]):
-                cues_idx = np.random.choice(indices, size=n_cues, replace=False, p=P_cue)
-                pos_idx  = np.random.choice(indices, size=n_cues, replace=False, p=P_pos)
+        # Getting cue and position probabilities
+        P_cue = np.array(block["cue"], float)
+        P_cue = P_cue / np.sum(P_cue) # normalizing
+        P_pos = block["pos"]
+        P_pos = P_pos / np.sum(P_pos)
 
-                trial = self.trials[index]
-                trial["cog"][cues_idx] = 1
-                trial["mot"][pos_idx]  = 1
-                for c, p in zip(cues_idx, pos_idx):
-                    trial["ass"][c, p] = 1
-                trial["rwd"][...] = block["rwd"]
-                index += 1
+        for trial in self.trials:
+            # Drawing cues and positions
+            cues_idx = np.random.choice(cue_options, size=n_cues, replace=False, p=P_cue)
+            pos_idx  = np.random.choice(pos_options, size=n_cues, replace=False, p=P_pos)
 
-    def __iter__(self):
-        if self.index_start is None:
-            self.setup()
-            self.index_start = -1
-            self.index_stop  = len(self)
-            self.index = self.index_start
-        return self
+            # Setting the trial values
+            trial["cog"][cues_idx] = 1
+            trial["mot"][pos_idx]  = 1
+            for c, p in zip(cues_idx, pos_idx):
+                trial["ass"][c, p] = 1
+            trial["rwd"] = block["rwd"]
 
-    def __next__(self):
-        self.index += 1
-        if self.index < self.index_stop:
-            return self.trials[self.index]
-
-        self.index       = None
-        self.index_start = None
-        self.index_stop  = None
-        raise StopIteration
-
-    def __len__(self):
-        return len(self.trials)
-
-    def __getitem__(self, index):
-        return self.trials[index]
-
+        return self.trials
 
     def process(self, trial, choice, RT=0.0, model=None, debug=False):
         """
@@ -178,26 +137,28 @@ class Task(object):
             reward = trial["rnd"] < trial["rwd"][cue]
 
         # Record everything
-        self.records[self.index]["choice"] = choice
-        self.records[self.index]["cue"]    = cue
-        self.records[self.index]["best"]   = best
-        self.records[self.index]["valid"]  = valid
-        self.records[self.index]["RT"]     = RT
-        self.records[self.index]["reward"] = reward
+        self.records[self.cursor]["choice"] = choice
+        self.records[self.cursor]["cue"]    = cue
+        self.records[self.cursor]["best"]   = best
+        self.records[self.cursor]["valid"]  = valid
+        self.records[self.cursor]["RT"]     = RT
+        self.records[self.cursor]["reward"] = reward
         if model is not None:
-            self.records[self.index]["value"] = model["value"]
-            self.records[self.index]["CTX:cog -> CTX:ass"] = model["CTX:cog -> CTX:ass"].weights
-            self.records[self.index]["CTX:cog -> STR:cog"] = model["CTX:cog -> STR:cog"].weights
+            self.records[self.cursor]["value"] = model["value"]
+            self.records[self.cursor]["CTX:cog -> CTX:ass"] = model["CTX:cog -> CTX:ass"].weights
+            self.records[self.cursor]["CTX:cog -> STR:cog"] = model["CTX:cog -> STR:cog"].weights
+
 
         if debug:
             if best: s = " (+)"
             else:    s = " (-)"
-            print("Trial %d%s" % ((self.index+1), s))
-            P = self.records[:self.index+1]["best"]
+            print("Trial %d%s" % ((self.cursor+1), s))
+            P = self.records[:self.cursor+1]["best"]
             print("  Mean performance: %.3f" % np.array(P).mean())
-            R = self.records[:self.index+1]["reward"]
+            R = self.records[:self.cursor+1]["reward"]
             print("  Mean reward:      %.3f" % np.array(R).mean())
 
+        self.cursor += 1
         return reward, cue, best
 
 

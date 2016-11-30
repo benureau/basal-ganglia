@@ -15,9 +15,9 @@ filename = 'data/guthrie_result'
 def run_model():
     experiment = bg.Experiment(model  = "../experiments/guthrie/guthrie_model.json",
                                task   = "../experiments/guthrie/guthrie_task.json",
-                               result = "{}.npy".format(filename),
-                               report = "{}.txt".format(filename),
-                               n_session = 8, n_block = 1, seed = 1,
+                               result = "{}.pickle".format(filename),
+                               report = "{}.json".format(filename),
+                               n_session = 8, seed = 1,
                                rootdir=os.path.dirname(__file__),
                                verbose=False) # for unittest and nosetests.
     records = experiment.run(bg.session, save=True, force=True)

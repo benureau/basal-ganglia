@@ -7,22 +7,25 @@ import matplotlib.pyplot as plt
 
 from bg.task import Task
 from bg.model import Model
+import bg
 
 
 seed = np.random.randint(0,1000)
 np.random.seed(seed)
 
-model = Model("guthrie_model.json")
-task  = Task("guthrie_task.json")
+model_filename = "guthrie_model.json"
+task_filename  = "guthrie_task.json"
+model = Model(bg.utils.load_json('.', model_filename))
+task = Task(bg.utils.load_json('.', task_filename))
 
 print("-"*30)
 print("Seed:     %d" % seed)
-print("Model:    %s" % model.filename)
-print("Task:     %s" % task.filename)
+print("Model:    %s" % model_filename)
+print("Task:     %s" % task_filename)
 print("-"*30)
 
 
-trial = task[0]
+trial = task.block('block 1')[0]
 model.process(task, trial, stop=False, debug=False)
 
 cog = model["CTX"]["cog"].history[:3000]

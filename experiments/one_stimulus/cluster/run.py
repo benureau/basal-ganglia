@@ -17,12 +17,11 @@ def run(config_path, task_id):
 
     experiment = Experiment(model  = 'model_{}.json'.format(config.name),
                             task   = 'task_{}.json'.format(config.name),
-                            result = 'data/data_{}.{:05d}.npy'.format(config.name, task_id),
-                            report = 'data/data_{}.{:05d}.txt'.format(config.name, task_id),
-                            n_session=config.params["n_sessions"], n_block=config.params['n_block'], 
-                            seed=0,
+                            result = 'data/data_{}.{:05d}.pickle'.format(config.name, task_id),
+                            report = 'data/data_{}.{:05d}.json'.format(config.name, task_id),
                             changes= 'data/changes_{}.{:05d}.json'.format(config.name, task_id),
-                            verbose=True, rootdir=rootdir)
+                            n_session=config.params["n_sessions"],
+                            rootdir=rootdir, seed=0, verbose=True)
     experiment.run(session, config.label, save=True, force=True)
 
 

@@ -7,30 +7,30 @@ from bg import Experiment
 
 def session(exp):
     exp.model.setup()
-    records = np.zeros((exp.n_block, exp.n_trial), dtype=exp.task.records.dtype)
+    records = []
 
     # Day 1 : GPi ON
     g1 = exp.model["GPi:cog -> THL:cog"].gain
     g2 = exp.model["GPi:mot -> THL:mot"].gain
-    for trial in exp.task:
+    for trial in exp.task.block('block 1'):
         exp.model.process(exp.task, trial)
-    records[0] = exp.task.records
+    records.append(exp.task.records)
 
     # Day 2: GPi OFF
     exp.model["GPi:cog -> THL:cog"].gain = 0
     exp.model["GPi:mot -> THL:mot"].gain = 0
-    for trial in exp.task:
+    for trial in exp.task.block('block 1'):
         exp.model.process(exp.task, trial)
-    records[1] = exp.task.records
+    records.append(exp.task.records)
 
     return records
 
 
 experiment = Experiment(model = "model-topalidou.json",
                         task = "task-topalidou.json",
-                        result = "data/experiment-topalidou-protocol-1.npy",
+                        result = "data/experiment-topalidou-protocol-1.pickle",
                         report = "data/experiment-topalidou-protocol-1.txt",
-                        n_session = 25, n_block = 2, seed = None)
+                        n_session = 25, seed = None)
 records = experiment.run(session, "Protocol 1")
 
 # Save performance (one column per session)

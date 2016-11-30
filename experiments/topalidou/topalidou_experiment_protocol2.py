@@ -7,39 +7,40 @@ from bg import Experiment
 
 def session(exp):
     exp.model.setup()
-    records = np.zeros((exp.n_block, exp.n_trial), dtype=exp.task.records.dtype)
+    records = []
 
     # Day 1 : GPi OFF
     g1 = exp.model["GPi:cog -> THL:cog"].gain
     g2 = exp.model["GPi:mot -> THL:mot"].gain
     exp.model["GPi:cog -> THL:cog"].gain = 0
     exp.model["GPi:mot -> THL:mot"].gain = 0
-    for trial in exp.task:
-        exp.model.process(exp.task, trial, model = exp.model)
-    records[0] = exp.task.records
+    for trial in exp.task.block('block 1'):
+        exp.model.process(exp.task, trial)
+    records.append(exp.task.records)
 
     # Day 2: GPi ON
     exp.model["GPi:cog -> THL:cog"].gain = g1
     exp.model["GPi:mot -> THL:mot"].gain = g2
-    for trial in exp.task:
-        exp.model.process(exp.task, trial, model = exp.model)
-    records[1] = exp.task.records
+    for trial in exp.task.block('block 1'):
+        exp.model.process(exp.task, trial)
+    records.append(exp.task.records)
 
     # Day 1 : GPi OFF
     exp.model["GPi:cog -> THL:cog"].gain = 0
     exp.model["GPi:mot -> THL:mot"].gain = 0
-    for trial in exp.task:
-        exp.model.process(exp.task, trial, model = exp.model)
-    records[2] = exp.task.records
+    for trial in exp.task.block('block 1'):
+        exp.model.process(exp.task, trial)
+    records.append(exp.task.records)
 
     return records
 
 
 experiment = Experiment(model = "model-topalidou.json",
                         task = "task-topalidou.json",
-                        result = "data/experiment-topalidou-protocol-2-new.npy",
+                        result = "data/experiment-topalidou-protocol-2-new.pickle",
                         report = "data/experiment-topalidou-protocol-2-new.txt",
-                        n_session = 25, n_block = 3, seed = 533)
+                        n_session = 25, seed = 533,
+                        changes={'task': {'session': 3*['block 1']}})
 records = experiment.run(session, "Protocol 2")
 
 
