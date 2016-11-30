@@ -12,9 +12,8 @@ def compute_changes(params):
 
     return changes
 
-
 def session(exp):
-    """Day 1 with saline, Day 2 with GPi"""
+    """Day 1 with lesion, Day 2 without"""
     exp.model.setup()
     records = []
 
@@ -35,7 +34,6 @@ def session(exp):
     records.append(exp.task.records)
 
     return records
-
 
 
 if __name__ == '__main__':

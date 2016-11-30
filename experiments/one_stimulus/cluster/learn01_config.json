@@ -1,5 +1,5 @@
 {
-  "name": "learn",
+  "name": "learn01",
   "label": "Learning Rates",
 
   "model_base": "../os_model.json",
@@ -9,5 +9,5 @@
              "hebb_ratio"  : [25, 50, 100, 200, 400, 600, 800, 1000, 1600]},
 
   "n_sessions": 100,
-  "python_module": "learn_prepare"
+  "python_module": "learn01_prepare"
 }
