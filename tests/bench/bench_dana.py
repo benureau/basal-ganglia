@@ -1,5 +1,4 @@
 import sys
-import time
 import numpy as np
 
 import dotdot
@@ -7,7 +6,7 @@ import dotdot
 if len(sys.argv) > 1:
     if sys.argv[1] == 'pydana':
         from cdana import pydana
-        mod = dana
+        mod = pydana
     else:
         import cdana
         mod = cdana

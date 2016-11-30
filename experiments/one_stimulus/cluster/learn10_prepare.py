@@ -1,5 +1,3 @@
-import numpy as np
-
 import prepare
 import learn01_prepare
 

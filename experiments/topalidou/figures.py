@@ -99,7 +99,7 @@ def figure_H_P(records, GPi, title, filename, save=True, show=False):
     if show:
         plt.show()
 
-        
+
 # -----------------------------------------------------------------------------
 def figure_H_RT(records, GPi, title, filename, save=True, show=False):
 
@@ -170,7 +170,7 @@ def figure_H_RT(records, GPi, title, filename, save=True, show=False):
     ax.yaxis.set_ticks_position('left')
 
     plt.title("%s (model, N=%d)" % (title, n_session))
-    
+
     plt.tight_layout()
     if save:
         plt.savefig(filename)
@@ -188,7 +188,7 @@ def figure_P(records, GPi, title, filename, save=True, show=False):
     n_block   = records.shape[1]
     n_trial   = records.shape[2]
     figsize  = (5*n_block, 4)
-    
+
     plt.figure(figsize=figsize, facecolor="w")
     ax = plt.subplot(111)
     ax.patch.set_facecolor("w")
@@ -198,7 +198,7 @@ def figure_P(records, GPi, title, filename, save=True, show=False):
     ax.yaxis.set_tick_params(direction="out")
     ax.xaxis.set_ticks_position('bottom')
     ax.xaxis.set_tick_params(direction="out")
-              
+
     alpha = 0.1
 
     X = 10+np.arange(n_trial-10)
@@ -218,7 +218,7 @@ def figure_P(records, GPi, title, filename, save=True, show=False):
         S = np.std(running_mean,axis=0)
         V = np.var(running_mean,axis=0)
         M1, M2 = M+S, M-S
-                
+
         plt.plot(X, M, c=color, lw=2)
         plt.fill_between(X, M1, M2, color=color, alpha=0.10)
         plt.plot(X, M1, c=color, lw=.5, alpha=.25)
@@ -226,7 +226,7 @@ def figure_P(records, GPi, title, filename, save=True, show=False):
 
         # global_mean = np.zeros(n_trial)
         # local_mean = np.zeros(n_trial)
-        
+
         # for j in range(n_session):
         #     for k in range(n_trial):
         #         imin, imax = max(k+1-sliding_window,0), k+1
@@ -236,7 +236,7 @@ def figure_P(records, GPi, title, filename, save=True, show=False):
         # plt.plot(X, global_mean, c=color, lw=2)
         ax.axvspan(X[1]-11,X[1]-1, color='.975')
         X += n_trial
-        
+
     plt.xticks([])
     X, Y = np.array([[1, n_trial-1], [-0.025, -0.025]])
     for i in range(n_block):
@@ -245,7 +245,7 @@ def figure_P(records, GPi, title, filename, save=True, show=False):
         ax.text((X[0]+X[1])/2, -0.075, text, ha="center", va="top")
         if i < n_block-1:
             ax.axvline(X[1]+1, linewidth=0.5, c='k', alpha=.75)
-            
+
         X += n_trial
 
     plt.ylabel("Instantaneous performance\n(sliding window of %d trials)"
@@ -262,12 +262,12 @@ def figure_P(records, GPi, title, filename, save=True, show=False):
 
 # -----------------------------------------------------------------------------
 def figure_RT(records, GPi, title, filename, save=True, show=False):
-   
+
     n_session = records.shape[0]
     n_block   = records.shape[1]
     n_trial   = records.shape[2]
     figsize  = (5*n_block, 4)
-    
+
     plt.figure(figsize=figsize, facecolor="w")
     ax = plt.subplot(111)
     ax.patch.set_facecolor("w")
@@ -277,18 +277,18 @@ def figure_RT(records, GPi, title, filename, save=True, show=False):
     ax.yaxis.set_tick_params(direction="out")
     ax.xaxis.set_ticks_position('bottom')
     ax.xaxis.set_tick_params(direction="out")
-              
+
     alpha = 0.05
     X = np.arange(n_trial)
     for i in range(n_block):
         RT = np.squeeze(records["RT"][:,i,:])
         color = 'b'
-        if not GPi[i]: color = 'r'            
+        if not GPi[i]: color = 'r'
         for j in range(n_session):
             plt.scatter(X, RT[j], 20, color=color, alpha=alpha)
         plt.plot(X, RT.mean(axis=0), color=color, lw=2)
         X += n_trial
-        
+
     plt.xticks([])
     X, Y = np.array([[1, n_trial-1], [-0.025, -0.025]])
     for i in range(n_block):
@@ -314,12 +314,12 @@ def figure_RT(records, GPi, title, filename, save=True, show=False):
 
 # -----------------------------------------------------------------------------
 def figure_V(records, GPi, title, filename, save=True, show=False):
-   
+
     n_session = records.shape[0]
     n_block   = records.shape[1]
     n_trial   = records.shape[2]
     figsize  = (5*n_block, 4)
-    
+
     plt.figure(figsize=figsize, facecolor="w")
     ax = plt.subplot(111)
     ax.patch.set_facecolor("w")
@@ -329,14 +329,14 @@ def figure_V(records, GPi, title, filename, save=True, show=False):
     ax.yaxis.set_tick_params(direction="out")
     ax.xaxis.set_ticks_position('bottom')
     ax.xaxis.set_tick_params(direction="out")
-              
+
     alpha = 0.05
     X = np.arange(n_trial)
     for i in range(n_block):
         V = np.squeeze(records["value"][:,i,:])
-        
+
         color = 'b'
-        if not GPi[i]: color = 'r'            
+        if not GPi[i]: color = 'r'
 
         for j in [0,1]:
             M = V[...,j].mean(axis=0)
@@ -352,7 +352,7 @@ def figure_V(records, GPi, title, filename, save=True, show=False):
                 print("V=%.2f ± %.2f" % (M[-1],S[-1]))
         X += n_trial
 
-        
+
     plt.xticks([])
     X, Y = np.array([[1, n_trial-1], [-0.025, -0.025]])
     for i in range(n_block):

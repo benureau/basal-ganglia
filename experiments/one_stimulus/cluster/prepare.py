@@ -1,35 +1,10 @@
 import os
 import json
-import string
 import shutil
 import itertools
 
-import numpy as np
-
 import config
 from paths import rootdir
-
-
-# json brackets are doubled, `{{`, to escape them from the format() function.
-# TASK_JSON = """
-# {{
-#     "session" : ["single", "choice"],
-#     "single" : {{
-#         "n_trial" : {n_trial},
-#         "n_cue"   : 1,
-#         "cue"     : [ {cue_freq_a}, {cue_freq_b},    0,    0 ],
-#         "pos"     : [    1,    1,    1,    1 ],
-#         "rwd"     : [ {rew_freq_a}, {rew_freq_b}, 0.00, 0.00 ]
-#     }},
-#     "choice" : {{
-#         "n_trial" : 100,
-#         "n_cue"   : 2,
-#         "cue"     : [    1,    1,    0,    0 ],
-#         "pos"     : [    1,    1,    1,    1 ],
-#         "rwd"     : [ {rew_freq_a}, {rew_freq_b}, 0.00, 0.00 ]
-#     }}
-# }}
-# """
 
 
 def write_changes(idx, changes):

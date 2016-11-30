@@ -4,7 +4,6 @@
 # -----------------------------------------------------------------------------
 import os
 import unittest
-import numpy as np
 
 import dotdot
 import bg
@@ -22,7 +21,7 @@ def run_model():
                                verbose=False) # for unittest and nosetests.
     records = experiment.run(bg.session, save=True, force=True)
 
-def result_filename(suffix='', ext='npy'):
+def result_filename(suffix='', ext='pickle'):
     return os.path.join(os.path.dirname(__file__),
                         '{}{}.{}'.format(filename, suffix, ext))
 
@@ -32,7 +31,7 @@ class DanaTests(unittest.TestCase):
 
     def test_reproducible(self):
         # removing existing results
-        for ext in ['npy', 'txt']:
+        for ext in ['pickle', 'txt']:
             for suffix in ['', '_ref']:
                 if os.path.exists(result_filename(suffix=suffix, ext=ext)):
                     os.remove(result_filename(suffix=suffix, ext=ext))
@@ -40,13 +39,13 @@ class DanaTests(unittest.TestCase):
         # first run of the model
         run_model()
         # moving the files out of the way
-        for ext in ['npy', 'txt']:
+        for ext in ['pickle', 'txt']:
             os.rename(result_filename(ext=ext), result_filename(suffix='_ref', ext=ext))
         # second run of the model: should be identical
         run_model()
 
         # comparing results
-        for ext in ['npy', 'txt']:
+        for ext in ['pickle', 'txt']:
             with open(result_filename(ext=ext), 'rb') as f:
                 run0 = f.read()
             with open(result_filename(suffix='_ref', ext=ext), 'rb') as f:
